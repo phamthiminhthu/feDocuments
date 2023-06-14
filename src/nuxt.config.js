@@ -47,9 +47,9 @@ export default {
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
+  plugins:[
+    '~plugins/axios',
   ],
-
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -64,7 +64,6 @@ export default {
   ],
   googleFonts: {
     families: {
-     
     },
     display: 'swap',
   },
@@ -76,6 +75,11 @@ export default {
     'cookie-universal-nuxt',
 
   ],
+
+  router: {
+    middleware: ['auth'],
+    fallback: true,
+  },
 
   proxy: {
     '/api': {
@@ -95,16 +99,15 @@ export default {
       },
     }
   }, 
-
-  router: {
-    middleware: ['auth']
-  },
-
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      
+      themes: {
+        light: {
+          primary: '#757575', // Replace with your desired primary text color
+        },
+      },
     }
   },
   fontawesome: {

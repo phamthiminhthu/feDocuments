@@ -1,27 +1,28 @@
-export const state = () => ({
+export const state = () => {
+  return {
     isLoggedIn: false,
-    jwt: null,
-  });
-  
-  export const mutations = {
-    setLoggedIn(state, value) {
-      state.isLoggedIn = value;
-    },
-    setJwt(state, token) {
-      state.jwt = token;
-    },
+    token: null,
   };
-  
-  export const getters = {
-    getIsLoggedIn(state) {
-      return state.isLoggedIn
-    }
-  }
-  export const actions = {
-    login({ commit }, { jwt }) {
-      this.$cookies.set('jwt', jwt);
-      commit('setLoggedIn', true);
-      commit('setJwt', jwt);
-    },
-  };
-  
+};
+
+export const mutations = {
+  setIsLoggedIn(state, value) {
+    state.isLoggedIn = value;
+  },
+  setToken(state, token) {
+    state.token = token;
+  },
+};
+
+export const getters = {
+  getIsLoggedIn(state) {
+    return state.isLoggedIn;
+  },
+};
+export const actions = {
+  login({ commit }, { token }) {
+    this.$cookies.set("token", token);
+    commit("setIsLoggedIn", true);
+    commit("setToken", token);
+  },
+};

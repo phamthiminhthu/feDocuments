@@ -34,7 +34,10 @@
 </template>
 <script>
 export default {
-    layout: 'base',
+    layout: 'guest',
+    meta: {
+        requiresAuth: false
+    },
     data() {
         return {
         }

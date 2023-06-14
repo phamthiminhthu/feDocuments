@@ -16,6 +16,7 @@
     "@nuxtjs/proxy": "^2.1.0",
     "cookie-universal-nuxt": "^2.2.2",
     "core-js": "^3.25.3",
+    "date-fns": "^2.30.0",
     "flowbite": "^1.6.5",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",

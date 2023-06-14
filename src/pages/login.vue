@@ -18,26 +18,28 @@
               <label for="email" class="block text-sm font-medium landing-font-18 text-gray-900">Email</label>
               <div class="flex rounded-md mt-2">
                 <v-text-field id="email" v-model="email" :rules="emailRules" type="email" outlined dense required class="block flex-1 border-0 bg-transparent py-3 pl-2
-                            text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 invalid:border-pink-500
-                             invalid:text-pink-600 "></v-text-field>
+                                text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 invalid:border-pink-500
+                                 invalid:text-pink-600 "></v-text-field>
               </div>
               <label for="password" class="block text-sm font-medium landing-font-18 text-gray-900 mt-5">Password</label>
               <div class="flex rounded-md mt-2">
-                <v-text-field id="password" v-model="password" :rules="passwordRules" type="password" outlined dense required class="block flex-1 border-0 bg-transparent py-3 pl-2
-                            text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"></v-text-field>
+                <v-text-field id="password" v-model="password" :rules="passwordRules" type="password" outlined dense
+                  required
+                  class="block flex-1 border-0 bg-transparent py-3 pl-2
+                                text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"></v-text-field>
               </div>
               <div class="text-base mt-2.5 float-right mb-20">
                 <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
               </div>
               <div>
                 <button type="submit" class="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2
-                                  font-semibold !text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
-                                  focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                      font-semibold !text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
+                                      focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                   <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" viewBox="0 0 20 20"
                       fill="currentColor" aria-hidden="true">
                       <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0
-                                         00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
+                                             00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
                         clip-rule="evenodd" />
                     </svg>
                   </span>
@@ -73,7 +75,6 @@ export default {
   data: () => ({
     login: false,
     email: "",
-    email: "",
     emailRules: [
       (v) => !!v || "Please enter your email.",
       (v) =>
@@ -98,13 +99,19 @@ export default {
           email: this.email,
           password: this.password,
         });
-        this.showModal = true;
-        this.messageSuccess = "Login successfully";
-        this.$store.dispatch('auth/login', { jwt: response.content });
-        setTimeout(() => {
-          this.showModal = false;
-          this.$router.push("/");
-        }, 1500);
+        if (response) {
+          this.showModal = true;
+          this.messageSuccess = "Login successfully";
+          this.$store.dispatch('auth/login', { token: response.content });
+          setTimeout(() => {
+            this.showModal = false;
+            this.$router.push("/");
+          }, 1500);
+        } else {
+          this.snackbarText = "Error occurred";
+          this.snackbarColor = "error";
+          this.showSnackbar = true;
+        }
       } catch (error) {
         if (error.response && error.response.status === 401) {
           console.log(error.response)
