@@ -1,31 +1,48 @@
-*{
+* {
   font-family: 'Lato', sans-serif;
 }
-.landing-logo{
-    font-size:24px;
-    line-height: 20px;
-    color: rgb(180 83 9);
-    font-style: italic;
-    font-weight: 600;
-  }
-  .landing-font-44{
-    font-size: 44px;
-    line-height: 30px;
-  }
-  .landing-font-32{
-    font-size: 32px;
-    line-height: 30px;
-  }
-  .landing-font-24{
-    font-size: 24px;
-    line-height: 30px;
-  }
-  .landing-font-18{
-    font-size:18px;
-    line-height: 1.5rem;
-  }
-  .landing-font-18{
-    font-size: 18px;
-    line-height: 16px;
-  }
-  
+
+.landing-logo {
+  font-size: 24px;
+  line-height: 20px;
+  color: white !important;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.landing-title-page {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+
+}
+
+.landing-font-44 {
+  font-size: 44px;
+  line-height: 30px;
+}
+
+.landing-font-32 {
+  font-size: 32px;
+  line-height: 30px;
+}
+
+.landing-font-24 {
+  font-size: 24px;
+  line-height: 30px;
+}
+
+.landing-font-20 {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.landing-font-18 {
+  font-size: 18px;
+  line-height: 1.5rem;
+}
+
+.landing-font-14 {
+  font-size: 14px !important;
+  line-height: 14px !important;
+}

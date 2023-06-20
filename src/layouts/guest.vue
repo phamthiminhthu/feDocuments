@@ -1,10 +1,8 @@
 <template>
-    <div>
-        <Header />
+    <v-app>
+        <Header class="!flex-none"/>
         <main class="pt-36">
-            <v-app>
-                <Nuxt />
-            </v-app>
+            <Nuxt />
         </main>
-    </div>
+    </v-app>
 </template>

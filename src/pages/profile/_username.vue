@@ -38,10 +38,6 @@ export default {
     meta: {
         requiresAuth: false
     },
-    data() {
-        return {
-        }
-    },
     async mounted() {
         await Promise.all([
             this.$store.dispatch('user/fetchDataUserByUsername', { username: this.username }),

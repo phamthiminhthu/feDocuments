@@ -1,28 +1,46 @@
 export const state = () => ({
-    documents: null
-})
+  document: null,
+  urls: null,
+});
 
-export const mutations =  {
-    setDocuments(state, value) {
-        state.documents = value
-    }
-}
+export const mutations = {
+  setDocument(state, value) {
+    state.document = value;
+  },
+  setUrls(state, value) {
+    state.urls = value;
+  }
+};
 
 export const actions = {
-    async fetchDataAllDocuments({commit}){
-        try{
-            const response = await this.$axios.get('/management/document/show/all');
-            console.log(response);
-            if(response){
-                const documents = response.data.content;
-                commit("setDocuments", documents);
-            }
-        }catch(error){
-            console.log(error);
-        }
+  async fetchDataDocumentByDocumentKey({ commit }, { documentKey }) {
+    try {
+      const response = await this.$axios.get(
+        `/management/document/show/details/${documentKey}`
+      );
+      if (response) {
+        const document = response.data.content;
+        commit("setDocument", document);
+      }
+    } catch (error) {
+      console.log(error);
     }
-}
+  },
+  async fetchUrlsDocumentByDocumentKey({ commit }, { documentKey }) { 
+    try {
+          const response = await this.$axios.get(
+            `/management/document/url/show/all?documentKey=${documentKey}`
+          );
+          if (response) {
+            const urls = response.data.content;
+            commit("setUrls", urls);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+  }
+};
 
 export const getters = {
-    getDocuments: (state) => state.documents,
-}
+  getDocument: (state) => state.document,
+};

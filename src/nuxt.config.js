@@ -28,15 +28,10 @@ export default {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=Lato:400,700'
       },
-      { rel: "stylesheet",
-        href: "https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css"
-      },
+
       ],
     script: [
-      {
-        src: 'https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js',
-        body: true
-      }
+  
     ]
   },
 
@@ -59,14 +54,8 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxtjs/fontawesome',
-    '@nuxtjs/google-fonts'
   ],
-  googleFonts: {
-    families: {
-    },
-    display: 'swap',
-  },
+
 
   //Modules: nuxtjs/proxy
   modules: [
@@ -77,17 +66,18 @@ export default {
   ],
 
   router: {
+     prefetchLinks: false,
     middleware: ['auth'],
     fallback: true,
   },
 
-  proxy: {
-    '/api': {
-      target: 'http://localhost:8080',
-      pathRewrite: { '^/api/': '/api/v1' },
-      changeOrigin: true,
-    },
-  },
+  // proxy: {
+  //   '/api': {
+  //     target: 'http://localhost:8080',
+  //     pathRewrite: { '^/api/': '/api/v1' },
+  //     changeOrigin: true,
+  //   },
+  // },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
