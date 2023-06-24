@@ -61,6 +61,7 @@
                         dark
                         v-bind="{ ...attrDialog, ...attrTooltip }"
                         v-on="{ ...tooltip, ...dialog }"
+                        :key="item.id + action.text"
                         @click="handleDocumentSelected(item)"
                         color="white"
                       >
@@ -71,10 +72,14 @@
                   </v-tooltip>
                 </template>
                 <component
+                  :key="item.id + action.text"
                   :is="action.component"
                   @close-dialog="closeDialog(item, action.text)"
                   @document-update="handleDocumentUpdated"
+                  @users-updated="notifyUsersUpdated"
                   :document="document"
+                  :users="users"
+                  v-if="document.documentKey"
                 >
                 </component>
               </v-dialog>
@@ -122,6 +127,7 @@ export default {
       search: "",
       selected: [],
       document: {},
+      users: [],
       headers: [
         { text: "", value: "favorite", sortable: false },
         {
@@ -157,6 +163,8 @@ export default {
           component: "DocumentShareCard",
         },
       ],
+      value: 1,
+      active: true,
     };
   },
   props: {
@@ -203,7 +211,6 @@ export default {
           `/management/document/loved/update?documentKey=${itemId}`
         );
         if (response) {
-          console.log(response.data);
           const updatedItem = this.formattedDocuments.find(
             (item) => item.id === itemId
           );
@@ -223,15 +230,23 @@ export default {
         documentKey: item.id,
       });
       this.document = this.$store.getters["document/getDocument"];
+
+      await this.$store.dispatch(
+        "document/fetchDataUsersSharedDocumentByDocumentKey",
+        { documentKey: this.document.documentKey }
+      );
+      this.users = this.$store.getters["document/getUsers"];
     },
-    handleDocumentUpdated(updateDocument) {
+    handleDocumentUpdated() {
       this.$emit("documents-updated");
-    }
+    },
+    notifyUsersUpdated(e) {
+      this.users = e;
+    },
   },
 };
 </script>
 <style>
-
 @-moz-keyframes loader {
   from {
     transform: rotate(0);
@@ -270,5 +285,8 @@ export default {
   to {
     transform: rotate(360deg);
   }
+}
+.v-overlay__scrim {
+  background-color: transparent !important;
 }
 </style>

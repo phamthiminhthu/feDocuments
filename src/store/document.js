@@ -1,7 +1,7 @@
 export const state = () => ({
   document: null,
   urls: null,
-  // dataPDF: null,
+  users: null
 });
 
 export const mutations = {
@@ -11,6 +11,9 @@ export const mutations = {
   setUrls(state, value) {
     state.urls = value;
   },
+  setUsers(state, value) {
+    state.users = value;
+  }
   // setDataPDF(state, value) {
   //   state.dataPDF = value;
   // },
@@ -57,10 +60,24 @@ export const actions = {
     //   console.log(error);
     // }
   },
+  async fetchDataUsersSharedDocumentByDocumentKey({ commit }, { documentKey }) {
+    try {
+      const response = await this.$axios.get(
+        `/management/document/share/users/all?documentKey=${documentKey}`
+      );
+      if (response) {
+        const users = response.data.content
+        commit("setUsers", users);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 
 export const getters = {
   getDocument: (state) => state.document,
   getUrls: (state) => state.urls,
+  getUsers: (state) => state.users,
   // getDataPDF: (state) => state.dataPDF,
 };
