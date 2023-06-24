@@ -29,17 +29,13 @@ export default {
         href: "https://fonts.googleapis.com/css?family=Lato:400,700",
       },
     ],
-    script: [],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ["@/assets/css/main.css", "@/assets/css/fonts.scss"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    "~plugins/axios",
-    { src: "~/plugins/pdfjs.js", mode: "client" }
-  ],
+  plugins: ["~plugins/axios"],
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -111,20 +107,6 @@ export default {
           autoprefixer: {},
         },
       },
-    },
-    extend(config, { isClient }) {
-      if (isClient) {
-        config.module.rules.push({
-          test: /\.js$/,
-          loader: 'babel-loader',
-          options: {
-            compact: false,
-            presets: ['@babel/preset-env'],
-            plugins: ['@babel/plugin-proposal-optional-chaining'],
-          },
-        });
-        config.optimization.splitChunks.maxSize = 200000;
-      }
     }
   },
 };

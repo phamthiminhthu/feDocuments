@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt",
-    "build": "nuxt build",
+    "move-static": "cp -a ./node_modules/@pdftron/pdfjs-express-viewer/public/. ./static/webviewer/'",
+    "build": "nuxt build && yarn move-static",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "test": "jest"
@@ -13,12 +14,12 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/proxy": "^2.1.0",
+    "@pdftron/pdfjs-express-viewer": "^8.7.4",
     "cookie-universal-nuxt": "^2.2.2",
     "core-js": "^3.25.3",
     "date-fns": "^2.30.0",
     "node-gyp": "^9.4.0",
     "nuxt": "^2.15.8",
-    "pdfjs-dist": "^3.7.107",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10",
