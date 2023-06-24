@@ -92,7 +92,7 @@
         <v-col cols="12">
           <div>
             <router-link :to="`/document/${document.documentKey}`" target="_blank">
-              <v-list-item>
+              <v-list-item class="!p-0">
                 <v-list-item-avatar>
                   <v-icon class="blue white--text"> mdi-clipboard-text </v-icon>
                 </v-list-item-avatar>
