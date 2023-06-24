@@ -89,6 +89,9 @@
             </v-list>
           </div>
         </v-col>
+        <v-col cols="12">
+          <DocumentReadBtn :document="document"/>
+        </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
@@ -99,31 +102,32 @@
 </template>
 <script>
 import { format, isToday } from "date-fns";
-import { document } from "postcss";
+
 export default {
-  props: {
-    document: Object,
-    default: null,
-  },
-  methods: {
-    closeDialog() {
-      this.$emit("close-dialog");
+    props: {
+        document: Object,
+        default: null,
     },
-    createdAt: function () {
-      var date = this.document.createdAt;
-      if (date != undefined) {
-        return this.formatDate(date);
-      }
-      return date;
+    methods: {
+        closeDialog() {
+            this.$emit("close-dialog");
+        },
+        createdAt: function () {
+            var date = this.document.createdAt;
+            if (date != undefined) {
+                return this.formatDate(date);
+            }
+            return date;
+        },
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            if (isToday(date)) {
+                return format(date, "hh:mm");
+            }
+            else {
+                return format(date, "dd/MM/yyyy");
+            }
+        },
     },
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      if (isToday(date)) {
-        return format(date, "hh:mm");
-      } else {
-        return format(date, "dd/MM/yyyy");
-      }
-    },
-  },
 };
 </script>

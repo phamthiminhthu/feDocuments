@@ -59,7 +59,7 @@
               label="Summary"
               outlined
               clearable
-              class="mt-2"
+              class="mt-2 textarea-input"
             ></v-textarea>
             <span class="subheading">Document's Note</span>
             <v-textarea
@@ -67,7 +67,7 @@
               label="Note"
               outlined
               clearable
-              class="mt-2"
+              class="mt-2 textarea-input"
             ></v-textarea>
           </v-col>
           <v-col cols="12" class="chips-items">
@@ -107,15 +107,25 @@
             >
               <v-icon dark> mdi-plus </v-icon>
             </v-btn>
-            <div v-if="urls.length > 0">
-              <v-list-item v-for="(url, i) in urls" :key="i">
+            <div v-if="urls.length > 0" class="urls-references">
+              <v-list-item v-for="url in urls" :key="url.id">
                 <v-list-item-content>
-                  <v-list-item-title>{{ url.url }}</v-list-item-title>
-                  <v-list-item-subtitle v-if="url.description != null" v-text="url.description" class="!whitespace-normal">
+                  <a
+                    :href="url.url"
+                    target="_blank"
+                    class="v-list-item-content"
+                  >
+                    <v-list-item-title>{{ url.url }}</v-list-item-title></a
+                  >
+                  <v-list-item-subtitle
+                    v-if="url.description != null"
+                    v-text="url.description"
+                    class="!whitespace-normal"
+                  >
                   </v-list-item-subtitle>
                 </v-list-item-content>
                 <v-list-item-action>
-                  <v-btn icon>
+                  <v-btn icon @click="deleteUrl(url.id)">
                     <v-icon color="primary">mdi-trash-can</v-icon>
                   </v-btn>
                 </v-list-item-action>
@@ -133,7 +143,9 @@
                   label="Description"
                   required
                 ></v-text-field>
-                <v-btn color="warning" elevation="2" small> Save </v-btn>
+                <v-btn color="warning" elevation="2" small type="submit">
+                  Save
+                </v-btn>
               </form>
             </div>
             <v-divider class="mt-2"></v-divider>
@@ -179,6 +191,7 @@ export default {
   data() {
     return {
       typeDocs: [],
+      urls: [],
       urlReference: {
         url: "",
         description: "",
@@ -202,7 +215,6 @@ export default {
       },
       tags: [],
       itemTags: ["#chemistry", "#articles"],
-      urls: [],
       showContent: false,
     };
   },
@@ -258,22 +270,45 @@ export default {
         console.log(error);
       }
     },
-    async createReferences(event) {
-      event.preventDefault();
+    async createReferences(e) {
+      e.preventDefault();
+      e.stopPropagation();
       try {
         const response = await this.$axios.post(
-          `/management/document/create-references?documentKey=${this.document.documentKey}`,
+          `/management/document/url/create?documentKey=${this.document.documentKey}`,
           {
-            urlReference: this.urlReference,
+            url: this.urlReference.url,
+            description: this.urlReference.description,
           }
         );
         if (response) {
-          this.document = this.$store.getters["document/getDocument"];
-          this.$emit("document-update");
+          await this.fetchDocumentUrls(this.document.documentKey);
+          this.urls = this.$store.getters["document/getUrls"];
+          this.showContent = false;
+          this.urlReference.url = "";
+          this.urlReference.description = "";
         }
       } catch (error) {
         console.log(error);
       }
+    },
+    async deleteUrl(idUrl) {
+      try {
+        const response = await this.$axios.post(
+          `/management/document/url/delete/${idUrl}`
+        );
+        if (response) {
+          await this.fetchDocumentUrls(this.document.documentKey);
+          this.urls = this.$store.getters["document/getUrls"];
+        }
+      } catch (error) {
+        console.log("test" + error);
+      }
+    },
+    async fetchDocumentUrls(documentKey) {
+      await this.$store.dispatch("document/fetchUrlsDocumentByDocumentKey", {
+        documentKey: documentKey,
+      });
     },
   },
   watch: {
@@ -317,6 +352,11 @@ export default {
     .v-input--selection-controls {
       margin-top: 5px;
       padding-top: 0px;
+    }
+  }
+  .textarea-input {
+    .v-input__control > .v-input__slot {
+      height: 120px;
     }
   }
 }
