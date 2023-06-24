@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-48">
     <div class="text-center landing-title-page mb-5">All References</div>
     <div class="upload-file-docs mt-10 mb-2 px-3">
       <v-form @submit.prevent="uploadFile">

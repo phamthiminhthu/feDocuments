@@ -108,6 +108,31 @@
         </template>
       </v-data-table>
     </v-card>
+    <div class="text-center">
+     <v-bottom-navigation
+      color="primary"
+      v-if="sheet"
+      class="!fixed right-0"
+    >
+      <v-btn>
+        <span>Recents</span>
+
+        <v-icon>mdi-history</v-icon>
+      </v-btn>
+
+      <v-btn>
+        <span>Favorites</span>
+
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
+
+      <v-btn @click="deleteDocument">
+        <span>Move To Trash</span>
+
+        <v-icon>mdi-delete-circle</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
+    </div>
   </div>
 </template>
 <script>
@@ -163,8 +188,8 @@ export default {
           component: "DocumentShareCard",
         },
       ],
-      value: 1,
-      active: true,
+      sheet: false,
+      documentsMoveToTrash: []
     };
   },
   props: {
@@ -186,6 +211,7 @@ export default {
         },
       }));
     },
+    
   },
   methods: {
     formatDate(dateString) {
@@ -199,6 +225,11 @@ export default {
     enterSelect() {
       if (this.selected.length == this.itemsPerPage) {
         alert("selected all");
+      }
+      if (this.selected.length > 0) {
+        this.sheet = true;
+      } else {
+        this.sheet = false;
       }
     },
     handleChange(item) {
@@ -243,6 +274,18 @@ export default {
     notifyUsersUpdated(e) {
       this.users = e;
     },
+    async deleteDocument() {
+      this.documentsMoveToTrash = this.selected.map(doc => doc.id);
+      try {
+        const response = await this.$axios.post('/management/document/delete/trash', this.documentsMoveToTrash);
+        if (response) {
+          console.log(response.data)
+          this.$emit("documents-updated");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
 };
 </script>
