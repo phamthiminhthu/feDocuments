@@ -83,7 +83,6 @@ export default {
     },
     async uploadFile() {
       if (this.selectedFile) {
-        console.log(this.selectedFile);
         this.loader = "loading";
         const l = this.loader;
         this[l] = !this[l];
