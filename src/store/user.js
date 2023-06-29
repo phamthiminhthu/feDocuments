@@ -3,7 +3,8 @@ export const state = () => ({
   following: null,
   followers: null,
   followerCount: 0,
-  followingCount: 0
+  followingCount: 0,
+  currentUserName: null,
 });
 
 export const mutations = {
@@ -21,6 +22,9 @@ export const mutations = {
   },
   setFollowingCount(state, value) {
     state.followingCount = value;
+  },
+  setCurrentUserName(state, value) {
+    state.currentUserName = value;
   }
 };
 
@@ -29,7 +33,8 @@ export const getters = {
   getFollowing: (state) => state.following,
   getFollowers: (state) => state.followers,
   getFollowersCount: (state) => state.followerCount,
-  getFollowingCount: (state) => state.followingCount
+  getFollowingCount: (state) => state.followingCount,
+  getCurrentUserName: (state) => state.currentUserName
 };
 
 export const actions = {
@@ -48,7 +53,7 @@ export const actions = {
   },
   async fetchDataUserFollowing({commit}, {username}){
     try{
-      const response = await this.$axios.get(`/user/profile/${username}/following`);
+      const response = await this.$axios.get(`/user/following?username=${username}`);
       const following = response.data.content;
       console.log(following);
       commit("setFollowing", following);
@@ -59,14 +64,32 @@ export const actions = {
   },
   async fetchDataUserFollower({commit}, {username}){
     try{
-      const response = await this.$axios.get(`/user/profile/${username}/follower`);
+      const response = await this.$axios.get(
+        `/user/follower?username=${username}`
+      );
       const follower = response.data.content;
-      console.log(follower)
       commit("setFollowers", follower);
       commit("setFollowersCount", follower.length)
     }catch (error) {
       console.log(error);
     }
   },
+  async fetchCurrentUserName({ commit }) {
+    try {
+      const email = this.$cookies.get('email');
+      if (email) {
+         const response = await this.$axios.get(
+           `/user/username/show?email=${email}`
+         );
+        if (response) {
+           const username = response.data.content;
+           this.$cookies.set("currentUsername", username);
+           commit("setCurrentUserName", username);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
 };

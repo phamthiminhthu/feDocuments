@@ -61,7 +61,7 @@
                   <v-subheader inset v-if="i === 0">Owner</v-subheader>
 
                   <v-select
-                    v-else
+                    v-else-if="i != 0 && action != 'share'"
                     :items="itemsAccess"
                     label="Viewer"
                     :key="user.id"
@@ -72,6 +72,9 @@
                     class="!shadow-none"
                   >
                   </v-select>
+                  <v-subheader v-else-if="action == 'share'" inset
+                    >Viewer</v-subheader
+                  >
                 </v-list-item-action>
               </v-list-item>
             </v-list>
@@ -95,9 +98,19 @@
 <script>
 export default {
   props: {
-    document: Object,
-    users: Array,
-    default: null,
+    document: {
+      type: Object,
+      default: {},
+      required: true
+    },
+    action: {
+      type: String,
+      default: null,
+    },
+    users: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {

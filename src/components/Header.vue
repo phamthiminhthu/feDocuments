@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar color="#111827" dark>
+  <v-toolbar color="#111827" dark class="!fixed top-0 z-50 w-full">
     <v-toolbar-title>Dashboard</v-toolbar-title>
 
     <v-divider class="mx-4" vertical></v-divider>

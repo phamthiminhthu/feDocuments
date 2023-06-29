@@ -20,7 +20,12 @@
         show-select
       >
         <template v-slot:item.typeDocumentsList="{ item }">
-          <template v-if="item.typeDocumentsList.length > 0">
+          <template
+            v-if="
+              item.typeDocumentsList != null &&
+              item.typeDocumentsList.length > 0
+            "
+          >
             <v-card class="mx-0 !shadow-none">
               <v-list class="hover:bg-gray-50!">
                 <v-list-item-group>
@@ -38,12 +43,16 @@
             </v-card>
           </template>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:item.actions="{ item }" v-if="status != 'trash'">
           <v-chip-group multiple active-class="primary--text">
             <v-chip
               color="#111827"
               v-for="action in actions"
               :key="item.id + action.text"
+              v-if="
+                status != 'share' ||
+                (status == 'share' && action.text != 'Edit')
+              "
             >
               <v-dialog
                 v-model="item.dialog[action.text.toLowerCase()]"
@@ -79,6 +88,7 @@
                   @users-updated="notifyUsersUpdated"
                   :document="document"
                   :users="users"
+                  :action="status"
                   v-if="document.documentKey"
                 >
                 </component>
@@ -86,7 +96,7 @@
             </v-chip>
           </v-chip-group>
         </template>
-        <template v-slot:item.favorite="{ item }">
+        <template v-slot:item.favorite="{ item }" v-if="status == null">
           <v-chip color="#111827">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -108,30 +118,51 @@
         </template>
       </v-data-table>
     </v-card>
-    <div class="text-center">
-     <v-bottom-navigation
-      color="primary"
-      v-if="sheet"
-      class="!fixed right-0"
-    >
-      <v-btn>
-        <span>Recents</span>
+    <div class="actions-docs">
+      <div class="text-center" v-if="status != 'trash'">
+        <v-bottom-navigation
+          color="primary"
+          v-if="sheet"
+          class="!fixed right-0"
+        >
+          <v-btn>
+            <span>Recents</span>
 
-        <v-icon>mdi-history</v-icon>
-      </v-btn>
+            <v-icon>mdi-history</v-icon>
+          </v-btn>
 
-      <v-btn>
-        <span>Favorites</span>
+          <v-btn>
+            <span>Favorites</span>
 
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
+            <v-icon>mdi-heart</v-icon>
+          </v-btn>
 
-      <v-btn @click="deleteDocument">
-        <span>Move To Trash</span>
+          <v-btn @click="deleteDocument">
+            <span>Move To Trash</span>
 
-        <v-icon>mdi-delete-circle</v-icon>
-      </v-btn>
-    </v-bottom-navigation>
+            <v-icon>mdi-delete-circle</v-icon>
+          </v-btn>
+        </v-bottom-navigation>
+      </div>
+      <div class="text-center" v-else>
+        <v-bottom-navigation
+          color="primary"
+          v-if="sheet"
+          class="!fixed right-0"
+        >
+          <v-btn @click="putBackDocs">
+            <span>Put Back</span>
+
+            <v-icon>mdi-file-undo</v-icon>
+          </v-btn>
+
+          <v-btn @click="deletePermanently">
+            <span>Delete Permanently</span>
+
+            <v-icon>mdi-delete-forever-outline</v-icon>
+          </v-btn>
+        </v-bottom-navigation>
+      </div>
     </div>
   </div>
 </template>
@@ -189,13 +220,16 @@ export default {
         },
       ],
       sheet: false,
-      documentsMoveToTrash: []
     };
   },
   props: {
     documents: {
       type: Array,
       default: () => [],
+    },
+    status: {
+      type: String,
+      default: null,
     },
   },
   computed: {
@@ -211,7 +245,6 @@ export default {
         },
       }));
     },
-    
   },
   methods: {
     formatDate(dateString) {
@@ -242,11 +275,13 @@ export default {
           `/management/document/loved/update?documentKey=${itemId}`
         );
         if (response) {
+          console.log(response.data);
           const updatedItem = this.formattedDocuments.find(
             (item) => item.id === itemId
           );
           if (updatedItem) {
             updatedItem.loved = loved;
+            this.$emit("documents-updated");
           }
         }
       } catch (error) {
@@ -275,17 +310,50 @@ export default {
       this.users = e;
     },
     async deleteDocument() {
-      this.documentsMoveToTrash = this.selected.map(doc => doc.id);
+      let documentsMoveToTrash = this.selected.map((doc) => doc.id);
       try {
-        const response = await this.$axios.post('/management/document/delete/trash', this.documentsMoveToTrash);
+        const response = await this.$axios.post(
+          "/management/document/delete/trash",
+          documentsMoveToTrash
+        );
         if (response) {
-          console.log(response.data)
+          console.log(response.data);
           this.$emit("documents-updated");
         }
       } catch (error) {
         console.log(error);
       }
-    }
+    },
+    async putBackDocs() {
+      let documentsPutPack = this.selected.map((doc) => doc.id);
+      try {
+        const response = await this.$axios.post(
+          "/management/document/undo",
+          documentsPutPack
+        );
+        if (response) {
+          console.log(response.data);
+          this.$emit("documents-updated");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async deletePermanently() {
+      let documentsDeletePermanently = this.selected.map((doc) => doc.id);
+      try {
+        const response = await this.$axios.post(
+          "/management/document/delete",
+          documentsDeletePermanently
+        );
+        if (response) {
+          console.log(response.data);
+          this.$emit("documents-updated");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>

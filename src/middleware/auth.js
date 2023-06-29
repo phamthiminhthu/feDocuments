@@ -3,7 +3,7 @@ export default function ({ store, route, redirect, app }) {
   const isLoggedIn = store.state.auth.isLoggedIn;
   const currentPath = route.path;
   const isRedirected = route.meta.some((meta) => meta.redirectedFrom);
-  const requiresAuth = route.meta[0].requiresAuth === undefined ? true :  route.meta[0].requiresAuth;
+  const requiresAuth = route.meta[0].requiresAuth === undefined ? true : route.meta[0].requiresAuth;
 
   if (isRedirected) {
     return;

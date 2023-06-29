@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <Header class="!flex-none"/>
-        <main class="pt-36">
+        <main>
             <Nuxt />
         </main>
     </v-app>

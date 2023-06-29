@@ -91,7 +91,10 @@
         </v-col>
         <v-col cols="12">
           <div>
-            <router-link :to="`/document/${document.documentKey}`" target="_blank">
+            <router-link
+              :to="`/document/${document.documentKey}`"
+              target="_blank"
+            >
               <v-list-item class="!p-0">
                 <v-list-item-avatar>
                   <v-icon class="blue white--text"> mdi-clipboard-text </v-icon>
@@ -117,12 +120,16 @@ import { format, isToday } from "date-fns";
 
 export default {
   props: {
-    document: Object,
-    default: null,
+    document: {
+      type: Object,
+      default: null,
+      required: true,
+    },
   },
   methods: {
-    closeDialog() {
-      this.$emit("close-dialog");
+    closeDialog(document) {
+      console.log("test");
+      this.$emit("close-dialog", document);
     },
     createdAt: function () {
       var date = this.document.createdAt;

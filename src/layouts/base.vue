@@ -21,93 +21,42 @@
                   </a>
                 </div>
                 <div class="h-screen">
-                  <div
-                    class="px-0 py-10 h-full overflow-y-auto scrollbar"
-                  >
-                    <ul
-                      class="mt-12 space-y-2 font-medium pl-1 border-t border-gray-200"
+                  <div class="px-0 py-10 h-full overflow-y-auto scrollbar">
+                    <v-list
+                      class="mt-10 space-y-2 font-medium border-t border-gray-200 pl-1 !bg-[#111827]"
                     >
                       <v-list-group
-                        :value="true"
+                        v-for="(item, index) in menus"
+                        :value="isSelected(index)"
                         prepend-icon="mdi-view-dashboard"
+                        :key="item.title"
                       >
                         <template v-slot:activator>
-                          <v-list-item-title class="landing-font-14"
-                            >Dashboard</v-list-item-title
-                          >
+                          <v-list-item-content>
+                            <v-list-item-title class="landing-font-14">{{
+                              item.title
+                            }}</v-list-item-title>
+                          </v-list-item-content>
                         </template>
-                        <v-list-item
-                          v-for="([title, icon], i) in documents"
-                          :key="i"
-                          link
-                          class="pl-8"
-                        >
-                          <v-list-item-icon>
-                            <v-icon v-text="icon"></v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-title
-                            v-text="title"
-                            class="landing-font-14"
-                          ></v-list-item-title>
-                        </v-list-item>
-                      </v-list-group>
-                    </ul>
-                    <ul
-                      class="mt-4 space-y-2 font-medium border-t border-gray-200 pl-1"
-                    >
-                      <v-list-group
-                        :value="true"
-                        prepend-icon="mdi-bookmark-box-multiple"
-                      >
-                        <template v-slot:activator>
-                          <v-list-item-title class="landing-font-14"
-                            >Collections</v-list-item-title
+                        <v-list-item-group color="primary">
+                          <v-list-item
+                            v-for="([title, icon], i) in item.actions"
+                            :key="i"
+                            link
+                            class="pl-8"
+                            @click="selectItem(index, i)"
                           >
-                        </template>
+                            <v-list-item-icon>
+                              <v-icon v-text="icon"></v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title
+                              v-text="title"
+                              class="landing-font-14"
+                            ></v-list-item-title>
+                          </v-list-item>
+                        </v-list-item-group>
                       </v-list-group>
-                    </ul>
-                    <ul
-                      class="mt-4 space-y-2 font-medium border-t border-gray-200 pl-1"
-                    >
-                      <v-list-group
-                        :value="true"
-                        prepend-icon="mdi-account-multiple"
-                      >
-                        <template v-slot:activator>
-                          <v-list-item-title class="landing-font-14"
-                            >Groups</v-list-item-title
-                          >
-                        </template>
-                      </v-list-group>
-                    </ul>
-                    <ul
-                      class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 pl-1"
-                    >
-                      <v-list-group
-                        :value="true"
-                        prepend-icon="mdi-account-circle"
-                      >
-                        <template v-slot:activator>
-                          <v-list-item-title class="landing-font-14"
-                            >Users</v-list-item-title
-                          >
-                        </template>
-                        <v-list-item
-                          v-for="([title, icon], i) in users"
-                          :key="i"
-                          link
-                          class="pl-8"
-                        >
-                          <v-list-item-icon>
-                            <v-icon v-text="icon"></v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-title
-                            v-text="title"
-                            class="landing-font-14"
-                          ></v-list-item-title>
-                        </v-list-item>
-                      </v-list-group>
-                    </ul>
+                    </v-list>
                   </div>
                 </div>
               </div>
@@ -115,7 +64,7 @@
           </div>
           <div class="flex-1">
             <Header />
-            <main class="mt-12">
+            <main class="mt-24">
               <Nuxt />
             </main>
           </div>
@@ -127,19 +76,60 @@
 <script>
 export default {
   data: () => ({
-    users: [
-      ["Profile", "mdi-face-man-profile"],
-      ["Following", "mdi-account-star"],
-      ["Follower", "mdi-account-heart"],
+    menus: [
+      {
+        title: "Dashboard",
+        actions: [
+          [
+            "All References",
+            "mdi-file-document-multiple-outline",
+            "/dashboard/all-references",
+          ],
+          ["Favorites", "mdi-heart-box", "/dashboard/favorites"],
+          ["Completed", "mdi-book-check", "/dashboard/completed"],
+          ["Public", "mdi-earth", "/dashboard/public"],
+          ["Share with me", "mdi-share-variant", "/dashboard/share-with-me"],
+          ["Trash", "mdi-delete", "/dashboard/trash"],
+        ],
+      },
+      {
+        title: "Collections",
+        actions: [],
+      },
+      {
+        title: "Groups",
+        actions: [],
+      },
+      {
+        title: "Users",
+        actions: [
+          ["Profile", "mdi-face-man-profile"],
+          ["Following", "mdi-account-star"],
+          ["Follower", "mdi-account-heart"],
+        ],
+      },
     ],
-    documents: [
-      ["All References", "mdi-file-document-multiple-outline"],
-      ["Favorites", "mdi-heart-box"],
-      ["Public", "mdi-earth"],
-      ["Share with me", "mdi-share-variant"],
-      ["Trash", "mdi-delete"],
-    ],
+    selectedItem: {
+       groupIndex : 0,
+      itemIndex: 0,
+    },
   }),
+  methods: {
+    isSelected(groupIndex) {
+      return (
+        this.selectedItem !== null &&
+        this.selectedItem.groupIndex === groupIndex
+      );
+    },
+    selectItem(groupIndex, itemIndex) {
+      this.selectedItem = {
+        groupIndex,
+        itemIndex,
+      };
+      this.$router.push(this.menus[groupIndex]["actions"][itemIndex][2]);
+      console.log(this.selectedItem);
+    },
+  },
 };
 </script>
 
@@ -151,6 +141,16 @@ export default {
   .v-list-item__icon {
     .v-icon {
       color: white;
+    }
+  }
+  .v-list-item-group .v-list-item--active {
+    background-color: white;
+    color: #111827;
+    .v-list-item__icon .v-icon {
+      color: #111827;
+    }
+    .v-list-item__title {
+      color: #111827;
     }
   }
 }
