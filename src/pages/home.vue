@@ -76,6 +76,7 @@
               <v-col cols="9">
                 <DocumentShowItems
                   :documents="suggestedDocs"
+                  @document-updated="handleDocumentUpdatedSuggestedForYou"
                   v-if="suggestedDocs"
                 />
               </v-col>
@@ -184,6 +185,9 @@ export default {
     handleDocumentUpdated() {
       this.getAllDocumentsFollowing();
     },
+    handleDocumentUpdatedSuggestedForYou() {
+      this.getAllDocumentsSuggested();
+    }
   },
 };
 </script>

@@ -68,7 +68,6 @@ export const actions = {
             `/management/document/show/public/by-username?username=${username}`
           );
       if (response) {
-            console.log(response.data.content);
             const documents = response.data.content;
             commit("setDocuments", documents);
           }
@@ -106,7 +105,6 @@ export const actions = {
         "/management/document/trash/show/all"
       );
       if (response) {
-        console.log(response.data.content);
         const documents = response.data.content;
         commit("setDocuments", documents);
       }
@@ -120,7 +118,6 @@ export const actions = {
         "/management/document/following/show/all"
       );
       if (response) {
-        console.log(response.data.content);
         const documents = response.data.content;
         commit("setDocuments", documents);
       }
@@ -134,7 +131,6 @@ export const actions = {
         "/management/document/suggest/show/all"
       );
       if (response) {
-        console.log(response.data.content);
         const documents = response.data.content;
         commit("setSuggestedDocs", documents);
       }
@@ -148,7 +144,6 @@ export const actions = {
         "/management/document/suggest/user/show/all"
       );
       if (response) {
-        console.log(response.data.content);
         const documents = response.data.content;
         commit("setSuggestedUserList", documents);
       }

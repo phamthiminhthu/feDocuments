@@ -42,6 +42,7 @@
         <DocumentShowItems
           :documents="documentsPublic"
           v-if="documentsPublic"
+          @document-updated="handleUpdateDocuments"
           class="mt-16"
         />
       </div>
@@ -133,6 +134,9 @@ export default {
         username: this.username,
       });
     },
+    handleUpdateDocuments() {
+      this.fetchDocumentsPublicByUsername();
+    }
   },
 };
 </script>
