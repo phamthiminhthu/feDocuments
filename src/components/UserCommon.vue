@@ -29,7 +29,21 @@
       <div v-if="user.introduce != null" class="landing-font-18 mt-4">
         {{ user.introduce }}
       </div>
-      <div>{{ followerCount }} - {{ followingCount }}</div>
+      <div>
+        <v-chip class="ma-2" color="pink" label text-color="white">
+          <nuxt-link :to="`/profile/${user.username}/follower`">
+            <v-icon left color="white"> mdi-account-heart </v-icon>
+            <span style="color: white;"> {{ followerCount }}  <span class="ml-2">  Follower </span> </span>
+          </nuxt-link>
+        </v-chip>
+        <v-icon>mdi-minus</v-icon>
+        <v-chip class="ma-2" color="pink" label text-color="white">
+          <nuxt-link :to="`/profile/${user.username}/following`">
+            <v-icon left color="white"> mdi-account-star </v-icon>
+          <span style="color: white">  {{ followingCount }}<span class="ml-2">  Following </span></span>
+          </nuxt-link>
+        </v-chip>
+      </div>
     </div>
   </div>
 </template>
@@ -101,6 +115,8 @@ export default {
             this.$emit("update-status-follow");
           }
         } else if (this.status === "Edit Profile") {
+          this.$cookies.set("groupIndex", 3);
+          this.$cookies.set("itemIndex", 0);
           this.$router.push(`/profile/${this.username}/edit`);
         }
       } catch (error) {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3
-      class="text-center landing-font-32 uppercase text-amber-700 font-semibold"
+      class="text-center landing-font-32 uppercase text-amber-700 font-semibold mt-28"
     >
       Follower
     </h3>

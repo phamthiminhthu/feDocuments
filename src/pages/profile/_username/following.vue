@@ -1,9 +1,9 @@
 <template>
   <div>
     <h3
-      class="text-center landing-font-32 uppercase text-amber-700 font-semibold"
+      class="text-center landing-font-32 uppercase text-amber-700 font-semibold mt-28"
     >
-      Follower
+      Following
     </h3>
     <div>
       <FollowUsers
@@ -17,9 +17,14 @@
 </template>
 <script>
 export default {
-  layout: "guest",
   meta: {
     requiresAuth: false,
+  },
+  layout: 'guest',
+  data() {
+    return {
+      ownerStatus: false,
+    };
   },
   mounted() {
     this.fetchDataUsersFollowing();

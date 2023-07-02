@@ -9,13 +9,13 @@
   }
 
   .scrollbar::-webkit-scrollbar-track {
-    border-radius: 100vh;
+    /* border-radius: 100vh; */
     background: #f7f4ed;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
     background: #e0cbcb;
-    border-radius: 100vh;
+    /* border-radius: 100vh; */
     border: 2px solid #f6f7ed;
   }
 

@@ -35,8 +35,8 @@
                   <v-list>
                     <v-subheader>Following</v-subheader>
                     <v-list-item
-                      v-for="userFollowing in usersFollowing"
-                      :key="userFollowing.username"
+                      v-for="(userFollowing, index) in usersFollowing"
+                      :key="userFollowing.username + index"
                     >
                       <v-list-item-avatar>
                         <v-img
@@ -48,14 +48,14 @@
                       </v-list-item-avatar>
 
                       <v-list-item-content>
-                        <v-list-item-title>
-                          <nuxt-link
-                            :to="`/profile/${userFollowing.username}`"
-                            class="!text-black landing-font-18 font-semibold"
-                          >
+                        <nuxt-link
+                          :to="`/profile/${userFollowing.username}`"
+                          class="!text-black landing-font-18 font-semibold"
+                        >
+                          <v-list-item-title>
                             {{ userFollowing.username }}
-                          </nuxt-link>
-                        </v-list-item-title>
+                          </v-list-item-title>
+                        </nuxt-link>
                       </v-list-item-content>
 
                       <v-list-item-icon>
@@ -187,7 +187,7 @@ export default {
     },
     handleDocumentUpdatedSuggestedForYou() {
       this.getAllDocumentsSuggested();
-    }
+    },
   },
 };
 </script>

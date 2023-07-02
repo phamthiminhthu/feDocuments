@@ -4,6 +4,7 @@ export const state = () => ({
   followers: null,
   followerCount: 0,
   followingCount: 0,
+  currentUser: {},
   currentUserName: null,
 });
 
@@ -25,7 +26,10 @@ export const mutations = {
   },
   setCurrentUserName(state, value) {
     state.currentUserName = value;
-  }
+  },
+  setCurrentUser(state, value) {
+    state.currentUser = value;
+  },
 };
 
 export const getters = {
@@ -34,7 +38,8 @@ export const getters = {
   getFollowers: (state) => state.followers,
   getFollowersCount: (state) => state.followerCount,
   getFollowingCount: (state) => state.followingCount,
-  getCurrentUserName: (state) => state.currentUserName
+  getCurrentUserName: (state) => state.currentUserName,
+  getCurrentUser: (state) => state.currentUser,
 };
 
 export const actions = {
@@ -51,45 +56,59 @@ export const actions = {
       }
     }
   },
-  async fetchDataUserFollowing({commit}, {username}){
-    try{
-      const response = await this.$axios.get(`/user/following?username=${username}`);
+  async fetchDataUserFollowing({ commit }, { username }) {
+    try {
+      const response = await this.$axios.get(
+        `/user/following?username=${username}`
+      );
       const following = response.data.content;
       console.log(following);
       commit("setFollowing", following);
       commit("setFollowingCount", following.length);
-    }catch (error) {
+    } catch (error) {
       console.log(error);
     }
   },
-  async fetchDataUserFollower({commit}, {username}){
-    try{
+  async fetchDataUserFollower({ commit }, { username }) {
+    try {
       const response = await this.$axios.get(
         `/user/follower?username=${username}`
       );
       const follower = response.data.content;
       commit("setFollowers", follower);
-      commit("setFollowersCount", follower.length)
-    }catch (error) {
+      commit("setFollowersCount", follower.length);
+    } catch (error) {
       console.log(error);
     }
   },
   async fetchCurrentUserName({ commit }) {
     try {
-      const email = this.$cookies.get('email');
+      const email = this.$cookies.get("email");
       if (email) {
-         const response = await this.$axios.get(
-           `/user/username/show?email=${email}`
-         );
+        const response = await this.$axios.get(
+          `/user/username/show?email=${email}`
+        );
         if (response) {
-           const username = response.data.content;
-           this.$cookies.set("currentUsername", username);
-           commit("setCurrentUserName", username);
+          const username = response.data.content;
+          this.$cookies.set("currentUsername", username);
+          commit("setCurrentUserName", username);
         }
       }
     } catch (error) {
       console.log(error);
     }
-  }
-  
+  },
+  async fetchCurrentUser({ commit }) {
+    try {
+      const response = await this.$axios.get(`/user/information/by-token`);
+      if (response) {
+        const user = response.data.content;
+        console.log(user);
+        this.$cookies.set("email", user.email);
+        commit("setCurrentUser", user);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

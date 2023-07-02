@@ -106,7 +106,7 @@ export default {
           this.$store.dispatch('auth/login', { token: response.content });
           setTimeout(() => {
             this.showModal = false;
-            this.$router.push("/");
+            this.$router.push("/dashboard/all-references");
           }, 1500);
         } else {
           this.snackbarText = "Error occurred";
