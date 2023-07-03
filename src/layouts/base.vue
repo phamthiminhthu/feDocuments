@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row>
         <v-col cols="12" class="h-[75px]">
-          <Header :pageActive="pageActive"/>
+          <Header :pageActive="pageActive" />
         </v-col>
         <v-col cols="12" class="mt-0 pt-0">
           <div class="flex gap-[6px]">
@@ -30,7 +30,11 @@
                           </v-list-item-title>
                         </v-list-item-content>
                       </template>
-                      <v-list-item-group color="primary" v-model="subItemSelected" :key="index">
+                      <v-list-item-group
+                        color="primary"
+                        v-model="subItemSelected"
+                        :key="index"
+                      >
                         <v-list-item
                           v-for="(subItem, i) in item.actions"
                           :key="i"
@@ -77,8 +81,7 @@ export default {
           : 0,
     };
     this.menus[this.selectedItem.groupIndex].active = true;
-    this.subItemSelected = this.selectedItem.itemIndex
-
+    this.subItemSelected = this.selectedItem.itemIndex;
   },
   data: () => ({
     menus: [
@@ -88,7 +91,7 @@ export default {
           [
             "All References",
             "mdi-file-document-multiple-outline",
-            "/dashboard/all-references"
+            "/dashboard/all-references",
           ],
           ["Favorites", "mdi-heart-box", "/dashboard/favorites"],
           ["Completed", "mdi-book-check", "/dashboard/completed"],
@@ -111,9 +114,9 @@ export default {
       {
         title: "Users",
         actions: [
-          ["Profile", "mdi-face-man-profile", "/profile/phamthiminhthu/edit", false],
-          ["Following", "mdi-account-star", "profile/phamthiminhtu/following", false],
-          ["Follower", "mdi-account-heart", "profile/phamthiminhtu/follower", false],
+          ["Profile", "mdi-face-man-profile", "/", false],
+          ["Following", "mdi-account-star", "/following", false],
+          ["Follower", "mdi-account-heart", "/follower", false],
         ],
         active: false,
       },
@@ -130,7 +133,16 @@ export default {
         groupIndex,
         itemIndex,
       };
-      this.$router.push(this.menus[groupIndex]["actions"][itemIndex][2]);
+      if (groupIndex != 3) {
+        this.$router.push(this.menus[groupIndex]["actions"][itemIndex][2]);
+      } else {
+        let username = this.$cookies.get('currentUsername');
+        this.$router.push(
+          "/profile/" +
+            username +
+            this.menus[groupIndex]["actions"][itemIndex][2]
+        );
+      }
     },
   },
 };

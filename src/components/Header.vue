@@ -17,7 +17,11 @@
 
     <v-toolbar-items class="hidden-sm-and-down">
       <v-btn text class="mt-[5px]" @click="redirectDashboard">
-        <span :class="pageActive === 'Dashboard' ? 'color-active' : 'color-no-active'">
+        <span
+          :class="
+            pageActive === 'Dashboard' ? 'color-active' : 'color-no-active'
+          "
+        >
           Dashboard
         </span>
       </v-btn>
@@ -25,7 +29,12 @@
       <v-divider vertical></v-divider>
 
       <v-btn text class="mt-[5px]">
-        <nuxt-link to="/home" :class="pageActive === 'Home' ? 'color-active' : ''"> Home </nuxt-link>
+        <nuxt-link
+          to="/home"
+          :class="pageActive === 'Home' ? 'color-active' : ''"
+        >
+          Home
+        </nuxt-link>
       </v-btn>
 
       <v-divider vertical></v-divider>
@@ -34,28 +43,45 @@
         <v-menu bottom min-width="200px" rounded offset-y>
           <template v-slot:activator="{ on }">
             <v-btn icon x-large v-on="on">
-              <v-avatar color="brown" size="48">
+              <v-avatar color="brown" size="48" v-if="user['image'] != null">
                 <v-img :src="user['image']"></v-img>
+              </v-avatar>
+              <v-avatar v-else>
+                <img
+                  src="~/assets/image/avatar/avatar-default.png"
+                  alt="avatar"
+                  style="margin: 0 auto"
+                />
               </v-avatar>
             </v-btn>
           </template>
           <v-card>
             <v-list-item-content class="justify-center">
               <div class="mx-auto text-center">
-                <v-avatar color="brown">
+                <v-avatar color="brown" v-if="user['image'] != null">
                   <v-img :src="user['image']"></v-img>
+                </v-avatar>
+                <v-avatar v-else>
+                  <img
+                    src="~/assets/image/avatar/avatar-default.png"
+                    alt="avatar"
+                    style="margin: 0 auto"
+                  />
                 </v-avatar>
                 <h3 v-if="user['username'] != null">{{ user["username"] }}</h3>
                 <p class="text-caption mt-1">
                   {{ user["email"] }}
                 </p>
                 <v-divider class="my-3"></v-divider>
-                <nuxt-link :to="`/profile/${user['username']}`">
-                  <v-btn depressed rounded text>
-                    <v-icon dense> mdi-account-edit </v-icon>
-                    <span class="ml-1"> Profile </span>
-                  </v-btn>
-                </nuxt-link>
+                <v-btn
+                  depressed
+                  rounded
+                  text
+                  @click="redirectProfile(user['username'])"
+                >
+                  <v-icon dense> mdi-account-edit </v-icon>
+                  <span class="ml-1"> Profile </span>
+                </v-btn>
                 <v-divider class="my-3"></v-divider>
                 <v-btn depressed rounded text @click="logout">
                   <v-icon dense> mdi-logout </v-icon>
@@ -83,7 +109,10 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters["user/getCurrentUser"];
+      let user = this.$store.getters["user/getCurrentUser"];
+      this.$cookies.set("currentUsername", user["username"]);
+      this.$cookies.set("email", user["email"]);
+      return user;
     },
   },
   methods: {
@@ -103,6 +132,13 @@ export default {
         this.$router.push("/login");
       }
     },
+    redirectProfile(username) {
+      if (this.$cookies.get("token")) {
+        this.$cookies.set("groupIndex", 3);
+        this.$cookies.set("itemIndex", 0);
+        this.$router.push("/profile/" + username);
+      }
+    },
   },
 };
 </script>
@@ -110,7 +146,8 @@ export default {
 .color-active {
   color: white !important;
 }
-.color-no-active{
+
+.color-no-active {
   color: #757575 !important;
 }
 </style>

@@ -29,9 +29,39 @@
           @change="uploadFile"
         ></v-file-input>
       </v-form>
+      <div>
+        <v-snackbar
+          v-if="selectedFile"
+          :timeout="-1"
+          v-model="snackbar"
+          bottom
+          color="indigo"
+          tile
+          right
+        >
+          Uploading
+          <strong> {{ selectedFile.name }} </strong> ...
+        </v-snackbar>
+
+        <v-snackbar
+          v-if="selectedFile"
+          :timeout="8000"
+          v-model="snackbarSuccess"
+          bottom
+          color="success"
+          tile
+          right
+        >
+          Uploaded file <strong> {{ selectedFile.name }} </strong> Successfully
+          !
+        </v-snackbar>
+      </div>
     </div>
     <div>
-      <Documents :documents="filterDocuments" @documents-updated="handleChangeListDocument" />
+      <Documents
+        :documents="filterDocuments"
+        @documents-updated="handleChangeListDocument"
+      />
     </div>
   </div>
 </template>
@@ -51,6 +81,8 @@ export default {
           value.size < 16000000 ||
           "Avatar size should be less than 9 MB!",
       ],
+      snackbar: false,
+      snackbarSuccess: false,
     };
   },
 
@@ -83,6 +115,8 @@ export default {
     },
     async uploadFile() {
       if (this.selectedFile) {
+        this.snackbarSuccess = false;
+        this.snackbar = true;
         this.loader = "loading";
         const l = this.loader;
         this[l] = !this[l];
@@ -99,10 +133,14 @@ export default {
           }
           this[l] = false;
           this.loader = null;
+          this.snackbar = false;
+          this.snackbarSuccess = true;
         } catch (error) {
           console.log(error);
           this[l] = false;
           this.loader = null;
+          this.snackbar = false;
+          this.snackbarSuccess = false;
         }
       }
     },

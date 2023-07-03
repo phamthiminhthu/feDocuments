@@ -17,7 +17,7 @@
         item-key="id"
         v-model="selected"
         @input="enterSelect()"
-        show-select
+        :show-select="status !== 'share'"
       >
         <template v-slot:item.typeDocumentsList="{ item }">
           <template
@@ -317,7 +317,7 @@ export default {
           documentsMoveToTrash
         );
         if (response) {
-          console.log(response.data);
+          this.sheet = false;
           this.$emit("documents-updated");
         }
       } catch (error) {
@@ -332,7 +332,7 @@ export default {
           documentsPutPack
         );
         if (response) {
-          console.log(response.data);
+          this.sheet = false;
           this.$emit("documents-updated");
         }
       } catch (error) {
@@ -347,7 +347,7 @@ export default {
           documentsDeletePermanently
         );
         if (response) {
-          console.log(response.data);
+          this.sheet = false;
           this.$emit("documents-updated");
         }
       } catch (error) {

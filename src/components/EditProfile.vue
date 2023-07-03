@@ -32,7 +32,7 @@
                 class="mt-3"
                 color="black"
                 outlined
-                v-model="user.username"
+                v-model="updateUser.username"
                 disabled
                 required
               ></v-text-field>
@@ -45,7 +45,7 @@
                 class="mt-3"
                 color="black"
                 outlined
-                v-model="user.email"
+                v-model="updateUser.email"
                 disabled
                 required
               ></v-text-field>
@@ -153,6 +153,17 @@
         </div>
         <v-btn color="success" class="mr-4" type="submit"> Save </v-btn>
       </v-form>
+      <v-snackbar
+        timeout="6000"
+        absolute
+        bottom
+        right
+        tile
+        color="success"
+        v-model="snackbar"
+      >
+        Updated user successfully !
+      </v-snackbar>
     </div>
   </div>
 </template>
@@ -171,9 +182,7 @@ export default {
           value.size < 2000000 ||
           "Avatar size should be less than 2 MB!",
       ],
-      //   date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      //     .toISOString()
-      //     .substr(0, 10),
+      snackbar: false,
       menu: false,
       gender:
         this.user.gender == 0
@@ -232,6 +241,7 @@ export default {
       };
 
       try {
+        this.snackbar = false;
         const formData = new FormData();
         formData.append("email", this.updateUser.email);
         formData.append("username", this.updateUser.username);
@@ -239,13 +249,24 @@ export default {
           this.updateUser.avatar = this.selectedAvatar;
           formData.append("avatar", this.updateUser.avatar);
         }
-        formData.append("phone", this.updateUser.phone);
-        formData.append("address", this.updateUser.address);
-        formData.append("birthday", this.updateUser.birthday);
-        formData.append("fullname", this.updateUser.fullname);
-        formData.append("gender", this.updateUser.gender);
-        formData.append("introduce", this.updateUser.introduce);
-
+        if (this.updateUser.fullname != null) {
+          formData.append("fullname", this.updateUser.fullname);
+        }
+        if (this.updateUser.phone != null) {
+          formData.append("phone", this.updateUser.phone);
+        }
+        if (this.updateUser.address != null) {
+          formData.append("address", this.updateUser.address);
+        }
+        if (this.updateUser.birthday != null) {
+          formData.append("birthday", this.updateUser.birthday);
+        }
+        if (this.updateUser.gender) {
+          formData.append("gender", this.updateUser.gender);
+        }
+        if (this.updateUser.introduce != null) {
+          formData.append("introduce", this.updateUser.introduce);
+        }
         const response = await this.$axios.post("/user/update", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -253,6 +274,7 @@ export default {
         });
         if (response) {
           console.log(response.data);
+          this.snackbar = true;
         }
       } catch (e) {
         console.log(e);

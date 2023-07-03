@@ -83,12 +83,54 @@
       </v-container>
     </v-card-text>
     <v-card-actions class="m-3">
-      <v-chip class="ma-2 px-4 py-4" color="green" outlined default>
+      <v-chip
+        class="ma-2 px-4 py-4"
+        color="green"
+        outlined
+        default
+        @click="copyLink(document.documentKey)"
+      >
         <v-avatar left>
           <v-icon>mdi-link-variant</v-icon>
         </v-avatar>
         Copy link
       </v-chip>
+
+      <v-snackbar
+        timeout="3000"
+        v-model="snackbarCopy"
+        color="success"
+        absolute
+        right
+        rounded="pill"
+        top
+      >
+        Copy link successfully
+      </v-snackbar>
+
+      <v-snackbar
+        :timeout="-1"
+        v-model="snackbarShare"
+        color="amber darken-2"
+        absolute
+        right
+        rounded="pill"
+        top
+      >
+        Sharing document to users
+      </v-snackbar>
+      <v-snackbar
+        timeout="4000"
+        v-model="snackbarShareSuccess"
+        color="success"
+        absolute
+        right
+        rounded="pill"
+        top
+      >
+        Shared document to users successfully!
+      </v-snackbar>
+
       <v-spacer></v-spacer>
       <v-btn color="blue darken-1" text @click="closeDialog"> Close </v-btn>
       <v-btn color="blue darken-1" text @click="shareDocs"> Share </v-btn>
@@ -101,7 +143,7 @@ export default {
     document: {
       type: Object,
       default: {},
-      required: true
+      required: true,
     },
     action: {
       type: String,
@@ -119,6 +161,9 @@ export default {
       userId: Number,
       permission: [],
       itemsAccess: ["Viewer", "Remove Access"],
+      snackbarCopy: false,
+      snackbarShare: false,
+      snackbarShareSuccess: false,
     };
   },
   watch: {
@@ -136,24 +181,26 @@ export default {
     },
     async shareDocs() {
       if (this.select.length > 0) {
+        this.snackbarShare = true;
+        this.snackbarShareSuccess = false;
         try {
           const response = await this.$axios.post(
             `/management/document/share/?documentKey=${this.document.documentKey}`,
             this.select
           );
           if (response) {
-            console.log(response.data);
             this.select = [];
-            this.getUsersSharedDocument();
+            await this.getUsersSharedDocument();
             this.$emit(
               "users-updated",
               this.$store.getters["document/getUsers"]
             );
           }
+          this.snackbarShare = false;
+          this.snackbarShareSuccess = true;
         } catch (error) {
           console.log(error);
         }
-        this.$emit("close-dialog");
       } else {
         console.log("No email address");
       }
@@ -176,6 +223,25 @@ export default {
         }
       } catch (error) {
         console.log(error);
+      }
+    },
+    copyLink(documentKey) {
+      this.snackbarCopy = false;
+      if (process.client) {
+        let link =
+          window.location.protocol +
+          "//" +
+          window.location.host +
+          "/document/" +
+          documentKey;
+        navigator.clipboard
+          .writeText(link)
+          .then(() => {
+            this.snackbarCopy = true;
+          })
+          .catch((error) => {
+            console.log("Error copying link", error);
+          });
       }
     },
   },

@@ -25,7 +25,7 @@
               {{ itemDocument.user.username }}
             </nuxt-link>
             <span class="landing-font-14">
-              posted a document ・ {{ itemDocument.updatedAt }}
+              posted a document ・ updated at {{ itemDocument.updatedAt }}
             </span>
           </v-list-item-title>
         </v-list-item-content>

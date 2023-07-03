@@ -1,15 +1,17 @@
 <template>
   <div>
     <h3
-      class="text-center landing-font-32 uppercase text-amber-700 font-semibold mt-28"
+      class="text-center landing-font-32 uppercase text-amber-700 font-semibold mt-24"
     >
       Following
     </h3>
     <div>
       <FollowUsers
+        v-if="following"
         :username="username"
         :users="following"
-        v-if="following"
+        :countFollowing="following.length"
+        :countFollower="followerCount"
         @update-status="updateDataFollowing"
       />
     </div>
@@ -20,14 +22,15 @@ export default {
   meta: {
     requiresAuth: false,
   },
-  layout: 'guest',
-  data() {
-    return {
-      ownerStatus: false,
-    };
+  layout(context) {
+    if (context.params.username === context.$cookies.get('currentUsername')) {
+      return 'base';
+    }
+    return 'guest'
   },
   mounted() {
     this.fetchDataUsersFollowing();
+    this.fetchDataUsersFollower();
   },
   computed: {
     username() {
@@ -36,6 +39,9 @@ export default {
     following() {
       return this.$store.getters["user/getFollowing"];
     },
+    followerCount() {
+      return this.$store.getters["user/getFollowersCount"];
+    },
   },
   methods: {
     async fetchDataUsersFollowing() {
@@ -43,8 +49,14 @@ export default {
         username: this.username,
       });
     },
+    async fetchDataUsersFollower() {
+      await this.$store.dispatch("user/fetchDataUserFollower", {
+        username: this.username,
+      });
+    },
     updateDataFollowing() {
       this.fetchDataUsersFollowing();
+      this.fetchDataUsersFollower();
     },
   },
 };

@@ -2,10 +2,10 @@
   <v-container fluid class="mt-8" :key="count">
     <v-row>
       <v-col cols="4">
-        <UserCommon :username="username" @update-status-follow="updateFollow" />
+        <UserCommon :username="username" @update-status-follow="updateFollow" :countFollowing="countFollowing" :countFollower="countFollower"/>
       </v-col>
       <v-col cols="8">
-        <v-list-item v-for="user in users" :key="user.username" class="w-4/5">
+        <v-list-item v-for="user in users" :key="user.username" class="w-4/5 mt-12">
           <v-list-item-avatar>
             <v-img v-if="user.image != null" :src="user.image"></v-img>
             <img
@@ -40,7 +40,7 @@
               small
               @click="unfollow(user)"
             >
-              Unfollow
+              Unfollow 
             </v-btn>
             <v-btn
               v-else
@@ -76,6 +76,14 @@ export default {
       type: Array,
       default: null,
       required: true,
+    },
+    countFollowing: {
+      type: Number,
+      default: 0,
+    },
+    countFollower: {
+      type: Number,
+      default: 0,
     },
   },
   methods: {

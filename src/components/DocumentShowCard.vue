@@ -28,7 +28,7 @@
               {{ types.typeName }}
             </v-chip>
           </v-chip-group>
-          <div v-else class="subheading">No type document</div>
+          <!-- <div v-else class="subheading">No type document</div> -->
         </v-col>
         <v-col cols="12">
           <div
@@ -51,12 +51,9 @@
               {{ document.authors }}
             </div>
           </div>
-          <div class="summary my-3">
+          <div class="summary my-3" v-if="document.summary != null">
             <div class="landing-font-14 mb-2">Summary</div>
-            <div
-              v-if="document.summary != null"
-              class="landing-font-20 text-[#111827]"
-            >
+            <div class="landing-font-20 text-[#111827]">
               {{ document.summary }}
             </div>
           </div>
@@ -66,30 +63,57 @@
               {{ document.note }}
             </div>
           </div>
-          <div class="note my-3">
-            <div class="landing-font-14 mb-2">Urls</div>
-            <v-list disabled>
-              <v-list-item-group
-                color="primary"
-                v-if="document.urls != null && document.urls.length > 0"
+          <div class="tags">
+            <span class="subheading">Tags Document</span>
+            <v-chip-group
+              multiple
+              column
+              class="white--text !py-0"
+              v-if="
+                document.tagDtoList != null && document.tagDtoList.length > 0
+              "
+            >
+              <v-chip
+                v-for="tag in document.tagDtoList"
+                :key="tag.id"
+                class="white--text"
+                color="blue"
               >
+                {{ tag.tagName }}
+              </v-chip>
+            </v-chip-group>
+          </div>
+          <div class="urls mt-3">
+            <div class="landing-font-14">Urls References</div>
+            <v-list
+              class="!pt-0 ml-2"
+              v-if="document.urls != null && document.urls.length > 0"
+            >
+              <v-list-item-group color="primary">
                 <v-list-item
+                  class="!p-0"
                   v-for="(item, i) in document.urls"
                   :key="i"
                   two-line
                 >
                   <v-list-item-content>
-                    <v-list-item-title>{{ item.url }}</v-list-item-title>
-                    <v-list-item-subtitle>{{
-                      item.description
-                    }}</v-list-item-subtitle>
+                    <v-list-item-title>
+                      <a :href="item.url" target="_blank">
+                        {{ item.url }}
+                      </a>
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ item.description }}
+                    </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
             </v-list>
+            <!-- <div v-else class="ml-2">Empty</div> -->
           </div>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" class="!py-0">
+          <div class="landing-font-14">File</div>
           <div>
             <router-link
               :to="`/document/${document.documentKey}`"
@@ -128,7 +152,6 @@ export default {
   },
   methods: {
     closeDialog(document) {
-      console.log("test");
       this.$emit("close-dialog", document);
     },
     createdAt: function () {

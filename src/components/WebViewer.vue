@@ -56,7 +56,7 @@ export default {
             },
             this.$refs.viewer
           ).then((instance) => {
-            instance.UI.loadDocument(blob, { filename: "myfile.pdf" });
+            instance.UI.loadDocument(blob, { filename: "file.pdf" });
 
             const { Core, UI } = instance;
 

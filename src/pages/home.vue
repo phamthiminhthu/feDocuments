@@ -31,7 +31,7 @@
                 cols="3"
                 v-if="usersFollowing != null && usersFollowing.length > 0"
               >
-                <div class="following-list">
+                <div class="following-list !fixed">
                   <v-list>
                     <v-subheader>Following</v-subheader>
                     <v-list-item
@@ -85,7 +85,7 @@
                 cols="3"
                 v-if="usersSuggested != null && usersSuggested.length > 0"
               >
-                <div class="following-list">
+                <div class="following-list !fixed">
                   <v-list>
                     <v-subheader>Suggestion</v-subheader>
                     <v-list-item

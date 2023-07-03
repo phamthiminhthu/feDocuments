@@ -53,6 +53,14 @@
               clearable
               class="mt-2"
             ></v-text-field>
+            <span class="subheading">Document's Name </span>
+              <v-text-field
+                v-model="newDocument.docsName"
+                label="DocsName"
+                outlined
+                clearable
+                class="mt-2"
+              ></v-text-field>
             <span class="subheading">Document's Summary</span>
             <v-textarea
               v-model="newDocument.summary"
@@ -115,8 +123,8 @@
                     target="_blank"
                     class="v-list-item-content"
                   >
-                    <v-list-item-title>{{ url.url }}</v-list-item-title></a
-                  >
+                    <v-list-item-title>{{ url.url }}</v-list-item-title>
+                  </a>
                   <v-list-item-subtitle
                     v-if="url.description != null"
                     v-text="url.description"

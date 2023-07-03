@@ -62,7 +62,6 @@ export const actions = {
         `/user/following?username=${username}`
       );
       const following = response.data.content;
-      console.log(following);
       commit("setFollowing", following);
       commit("setFollowingCount", following.length);
     } catch (error) {
@@ -103,7 +102,6 @@ export const actions = {
       const response = await this.$axios.get(`/user/information/by-token`);
       if (response) {
         const user = response.data.content;
-        console.log(user);
         this.$cookies.set("email", user.email);
         commit("setCurrentUser", user);
       }
