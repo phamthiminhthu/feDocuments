@@ -47,7 +47,6 @@ export default {
         );
 
         if (response) {
-          console.log(response.data);
           const blob = new Blob([response.data], { type: "application/pdf" });
           PDFJSExpress(
             {

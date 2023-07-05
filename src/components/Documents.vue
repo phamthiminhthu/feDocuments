@@ -123,18 +123,31 @@
         <v-bottom-navigation
           color="primary"
           v-if="sheet"
-          class="!fixed right-0"
+          class="!fixed right-0 z-50"
         >
+          <v-menu top :offset-y="offset" rounded="lg">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn v-bind="attrs" v-on="on">
+                <span>Organize</span>
+                <v-icon>mdi-apple-keyboard-control</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item link @click="addToCollection">
+                <v-list-item-title>Add To Collection</v-list-item-title>
+              </v-list-item>
+              <v-list-item link>
+                <v-list-item-title @click="addToGroup"
+                  >Add To Group</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
           <v-btn>
             <span>Recents</span>
 
             <v-icon>mdi-history</v-icon>
-          </v-btn>
-
-          <v-btn>
-            <span>Favorites</span>
-
-            <v-icon>mdi-heart</v-icon>
           </v-btn>
 
           <v-btn @click="deleteDocument">
@@ -148,7 +161,7 @@
         <v-bottom-navigation
           color="primary"
           v-if="sheet"
-          class="!fixed right-0"
+          class="!fixed right-0 z-50"
         >
           <v-btn @click="putBackDocs">
             <span>Put Back</span>
@@ -163,6 +176,13 @@
           </v-btn>
         </v-bottom-navigation>
       </div>
+      <CollectionShowAllDialog
+        v-if="collections"
+        :dialog="addCollectionDialog"
+        :items="collections"
+        @colse-dialog="addCollectionDialog = false"
+        @add-document-collection="addDocumentCollection"
+      />
     </div>
   </div>
 </template>
@@ -220,6 +240,10 @@ export default {
         },
       ],
       sheet: false,
+      moveItems: ["Add To Collection", "Add To Group"],
+      offset: true,
+      addCollectionDialog: false,
+      collections: [],
     };
   },
   props: {
@@ -244,6 +268,9 @@ export default {
           share: false,
         },
       }));
+    },
+    formatDocumentsToCollections() {
+      return this.selected.map((document) => document.id);
     },
   },
   methods: {
@@ -354,6 +381,34 @@ export default {
         console.log(error);
       }
     },
+    async addToCollection() {
+      await this.getAllCollections();
+      this.collections = this.$store.getters["collections/getCollectionsAll"];
+      this.addCollectionDialog = true;
+    },
+    async getAllCollections() {
+      await this.$store.dispatch("collections/fetchAllCollections");
+    },
+    async addDocumentCollection(collections) {
+      if (collections.length > 0 && this.formatDocumentsToCollections.length > 0) {
+        try {
+          const response = await this.$axios.post(
+            "/owner/management/collection/document/move/documents",
+            {
+              idCollections: collections,
+              documentKeys: this.formatDocumentsToCollections,
+            }
+          );
+          if (response) {
+            console.log(response);
+            this.addCollectionDialog = false;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    addToGroup() {},
   },
 };
 </script>

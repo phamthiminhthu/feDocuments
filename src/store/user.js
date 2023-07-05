@@ -80,29 +80,12 @@ export const actions = {
       console.log(error);
     }
   },
-  async fetchCurrentUserName({ commit }) {
-    try {
-      const email = this.$cookies.get("email");
-      if (email) {
-        const response = await this.$axios.get(
-          `/user/username/show?email=${email}`
-        );
-        if (response) {
-          const username = response.data.content;
-          this.$cookies.set("currentUsername", username);
-          commit("setCurrentUserName", username);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  },
   async fetchCurrentUser({ commit }) {
     try {
       const response = await this.$axios.get(`/user/information/by-token`);
       if (response) {
         const user = response.data.content;
-        this.$cookies.set("email", user.email);
+        commit("setCurrentUserName", user.username);
         commit("setCurrentUser", user);
       }
     } catch (error) {

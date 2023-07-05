@@ -111,7 +111,6 @@ export default {
     user() {
       let user = this.$store.getters["user/getCurrentUser"];
       this.$cookies.set("currentUsername", user["username"]);
-      this.$cookies.set("email", user["email"]);
       return user;
     },
   },

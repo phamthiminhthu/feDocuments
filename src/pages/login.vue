@@ -102,7 +102,6 @@ export default {
         if (response) {
           this.showModal = true;
           this.messageSuccess = "Login successfully";
-          this.$cookies.set('email', this.email);
           this.$store.dispatch('auth/login', { token: response.content });
           setTimeout(() => {
             this.showModal = false;

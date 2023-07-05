@@ -15,7 +15,7 @@
         </v-tabs>
       </template>
     </v-toolbar>
-    <v-tabs-items v-model="tab" class="mt-[128px]">
+    <v-tabs-items v-model="tab" class="mt-36">
       <v-tab-item v-for="item in items" :key="item.title">
         <v-card flat v-if="item === 'Following'">
           <v-container fluid>
@@ -27,12 +27,17 @@
                   v-if="documents"
                 />
               </v-col>
-              <v-col
-                cols="3"
-                v-if="usersFollowing != null && usersFollowing.length > 0"
-              >
+              <v-col cols="3">
                 <div class="following-list !fixed">
-                  <v-list>
+                  <v-text-field
+                    v-model="searchKey"
+                    class="mx-4 w-4/5 mt-6 ml-6"
+                    label="Search"
+                    append-icon="mdi-magnify"
+                  ></v-text-field>
+                  <v-list
+                    v-if="usersFollowing != null && usersFollowing.length > 0"
+                  >
                     <v-subheader>Following</v-subheader>
                     <v-list-item
                       v-for="(userFollowing, index) in usersFollowing"
@@ -80,13 +85,17 @@
                   v-if="suggestedDocs"
                 />
               </v-col>
-
-              <v-col
-                cols="3"
-                v-if="usersSuggested != null && usersSuggested.length > 0"
-              >
+              <v-col cols="3">
                 <div class="following-list !fixed">
-                  <v-list>
+                  <v-text-field
+                    v-model="searchKey"
+                    class="mx-4 w-4/5 mt-6 ml-6"
+                    label="Search"
+                    append-icon="mdi-magnify"
+                  ></v-text-field>
+                  <v-list
+                    v-if="usersSuggested != null && usersSuggested.length > 0"
+                  >
                     <v-subheader>Suggestion</v-subheader>
                     <v-list-item
                       v-for="user in usersSuggested"
@@ -135,10 +144,13 @@ export default {
     return {
       tab: null,
       items: ["Following", "Recommended For You"],
-      username: null,
+      itemsTypeSearch: ['Tag', 'Type Document', 'User', 'Title Document'],
+      selectedType: null,
+      searchKey: null,
     };
   },
-  mounted() {
+  async mounted() {
+    await this.fetchCurrentUser();
     this.fetchUserFollowing();
     this.getAllDocumentsFollowing();
     this.getAllDocumentsSuggested();
@@ -157,6 +169,9 @@ export default {
     usersSuggested() {
       return this.$store.getters["documents/getSuggestedUserList"];
     },
+    username() {
+      return this.$store.getters["user/getCurrentUserName"];
+    },
   },
   methods: {
     async getAllDocumentsFollowing() {
@@ -166,14 +181,11 @@ export default {
       await this.$store.dispatch("documents/fetchDocumentsSuggested");
     },
     async fetchUserFollowing() {
-      if (this.$cookies.get("currentUsername")) {
-        this.username = this.$cookies.get("currentUsername");
+      if (this.$cookies.get("currentUserName") != null) {
         await this.$store.dispatch("user/fetchDataUserFollowing", {
-          username: this.username,
+          username: this.$cookies.get("currentUserName"),
         });
       } else {
-        await this.$store.dispatch("user/fetchCurrentUserName");
-        this.username = this.$store.getters["user/getCurrentUserName"];
         await this.$store.dispatch("user/fetchDataUserFollowing", {
           username: this.username,
         });
@@ -181,6 +193,9 @@ export default {
     },
     async fetchUsersSuggested() {
       await this.$store.dispatch("documents/fetchUsersSuggested");
+    },
+    async fetchCurrentUser() {
+      await this.$store.dispatch("user/fetchCurrentUser");
     },
     handleDocumentUpdated() {
       this.getAllDocumentsFollowing();

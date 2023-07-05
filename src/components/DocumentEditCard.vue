@@ -310,7 +310,7 @@ export default {
           this.urls = this.$store.getters["document/getUrls"];
         }
       } catch (error) {
-        console.log("test" + error);
+        console.log(error);
       }
     },
     async fetchDocumentUrls(documentKey) {

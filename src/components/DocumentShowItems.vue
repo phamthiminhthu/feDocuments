@@ -52,6 +52,22 @@
                 >{{ types.typeName }}</v-chip
               >
             </v-chip-group>
+            <v-chip-group
+              column
+              v-if="
+                itemDocument.tagDtoList != null &&
+                itemDocument.tagDtoList.length > 0
+              "
+            >
+              <v-chip
+                v-for="(tags, index) in itemDocument.tagDtoList"
+                color="orange"
+                small
+                :key="tags.tagName + index"
+              >
+                {{ tags.tagName }}
+              </v-chip>
+            </v-chip-group>
           </v-card-text>
           <v-card-actions>
             <v-btn
