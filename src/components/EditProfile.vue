@@ -149,9 +149,87 @@
                 v-model="updateUser.introduce"
               ></v-textarea>
             </div>
+            <div class="mb-8">
+              <v-dialog v-model="dialog" persistent max-width="500">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="green" dark v-bind="attrs" v-on="on">
+                    Change Password
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title class="text-h5"> Change Password </v-card-title>
+                  <v-card-text>
+                    <label
+                      for="password"
+                      class="block text-sm font-medium landing-font-18 text-gray-900 mt-5"
+                    >
+                      Old Password
+                    </label>
+                    <div class="flex rounded-md mt-2">
+                      <v-text-field
+                        id="oldPassword"
+                        v-model="oldPassword"
+                        type="password"
+                        outlined
+                        dense
+                        required
+                        class="block flex-1 border-0 bg-transparent py-3 pl-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                      ></v-text-field>
+                    </div>
+                    <label
+                      for="newPassword"
+                      class="block text-sm font-medium landing-font-18 text-gray-900 mt-5"
+                      >New Password</label
+                    >
+                    <div class="flex rounded-md mt-2">
+                      <v-text-field
+                        id="newPassword"
+                        v-model="newPassword"
+                        :rules="passwordRules"
+                        type="password"
+                        outlined
+                        dense
+                        required
+                        class="block flex-1 border-0 bg-transparent py-3 pl-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                      ></v-text-field>
+                    </div>
+                    <label
+                      for="confirm-password"
+                      class="block text-sm font-medium landing-font-18 text-gray-900 mt-5"
+                      >Confirm Password</label
+                    >
+                    <div class="flex rounded-md mt-2">
+                      <v-text-field
+                        id="confirm-password"
+                        v-model="confirmPassword"
+                        :rules="
+                          confirmPasswordRules.concat(passwordConfirmationRule)
+                        "
+                        type="password"
+                        outlined
+                        dense
+                        required
+                        class="block flex-1 border-0 bg-transparent py-3 pl-2 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                      ></v-text-field>
+                    </div>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="dialog = false">
+                      Cancel
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="changePassword">
+                      Save
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </div>
           </div>
         </div>
-        <v-btn color="success" class="mr-4" type="submit"> Save </v-btn>
+        <v-btn color="success" class="mr-4 text-center" type="submit">
+          Save
+        </v-btn>
       </v-form>
       <v-snackbar
         timeout="6000"
@@ -162,7 +240,7 @@
         color="success"
         v-model="snackbar"
       >
-        Updated user successfully !
+        {{ message }}
       </v-snackbar>
     </div>
   </div>
@@ -203,6 +281,16 @@ export default {
         address: this.user.address,
         introduce: this.user.introduce,
       },
+      dialog: false,
+      oldPassword: "",
+      newPassword: "",
+      passwordRules: [
+        (v) => !!v || "Please enter your password.",
+        (v) => v.length >= 6 || "Please enter at least 6 characters.",
+      ],
+      confirmPassword: "",
+      confirmPasswordRules: [(v) => !!v || "Please confirm your password."],
+      message: ""
     };
   },
   props: {
@@ -221,6 +309,10 @@ export default {
       } else {
         return this.user.image;
       }
+    },
+    passwordConfirmationRule() {
+      return () =>
+        this.newPassword === this.confirmPassword || "Password must match";
     },
   },
   methods: {
@@ -275,11 +367,30 @@ export default {
         if (response) {
           console.log(response.data);
           this.snackbar = true;
+          this.message = "Updated user successfully !"
         }
       } catch (e) {
         console.log(e);
       }
     },
+    async changePassword() {
+      this.snackbar = false;
+      try {
+        const response = await this.$axios.post("/user/change-password-account", {
+          oldPassword: this.oldPassword,
+          newPassword: this.newPassword,
+          confirmPassword: this.confirmPassword
+        });
+        if (response) {
+          console.log(response.data);
+          this.dialog = false;
+          this.snackbar = true;
+          this.message = "Change Password successfully!"
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
 };
 </script>

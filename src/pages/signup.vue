@@ -134,11 +134,12 @@
             </div>
             <div class="text-base mt-10 text-center">
               <span> Already have an account? </span>
-              <a
-                href="#"
-                class="font-medium text-indigo-600 hover:text-indigo-500"
-                >Login
-              </a>
+              <nuxt-link
+                to="login"
+                class="font-semibold !text-indigo-600 hover:text-indigo-500"
+              >
+                Login
+              </nuxt-link>
             </div>
           </div>
         </form>
