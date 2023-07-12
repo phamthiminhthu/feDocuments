@@ -22,7 +22,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text :disabled="collectionName==null" @click="createCollection">
+        <v-btn
+          color="green darken-1"
+          text
+          :disabled="collectionName == null"
+          @click="createCollection"
+        >
           Save
         </v-btn>
         <v-btn color="green darken-1" text @click="closeDialog"> Cancel </v-btn>
@@ -39,8 +44,9 @@ export default {
     },
     parentCollectionId: {
       type: String,
-      default: null
+      default: null,
     },
+    groupId: null,
   },
   data() {
     return {
@@ -52,29 +58,55 @@ export default {
   watch: {
     dialog() {
       this.dialogModal = this.dialog;
-    }
+    },
   },
   methods: {
     async createCollection(e) {
       e.preventDefault();
-      if (this.collectionName != null) {
-        try {
-          let collectionModel = {
-            collectionName: this.collectionName,
-            parentCollectionId: this.parentCollectionId != null ? this.parentCollectionId : null
-          };
-          const response = await this.$axios.post(
-            "/owner/management/collection/create",
-            collectionModel
-          );
-          if (response) {
-            this.collectionName = "";
-            this.$emit('create-collection', response);
+      if (this.groupId == null) {
+        if (this.collectionName != null) {
+          try {
+            let collectionModel = {
+              collectionName: this.collectionName,
+              parentCollectionId:
+                this.parentCollectionId != null
+                  ? this.parentCollectionId
+                  : null,
+              groupId: this.groupId,
+            };
+            const response = await this.$axios.post(
+              "/owner/management/collection/create",
+              collectionModel
+            );
+            if (response) {
+              this.collectionName = "";
+              this.$emit("create-collection", response);
+            }
+          } catch (e) {
+            if (e.response.status === 400) {
+              this.$emit("create-collection", e);
+              console.log(e);
+            }
           }
-        } catch (e) {
-          if (e.response.status === 400) {
-            this.$emit('create-collection', e);
-            console.log(e);
+        }
+      } else {
+        if (this.collectionName != null) {
+          try {
+            const response = await this.$axios.post(
+              `management/group/${this.groupId}/collection/create`,
+              {
+                collectionName: this.collectionName,
+                parentCollectionId: this.parentCollectionId,
+                groupId: this.groupId,
+              }
+            );
+            if (response) {
+              this.collectionName = "";
+              this.$emit("create-collection", response);
+            }
+          } catch (error) {
+            console.log(error);
+            this.$emit("create-collection", error);
           }
         }
       }

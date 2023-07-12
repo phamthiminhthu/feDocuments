@@ -39,6 +39,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    groupId: null,
   },
   data() {
     return {
@@ -73,16 +74,30 @@ export default {
       this.$emit("close-dialog");
     },
     async deleteCollection() {
-      try {
-        const response = await this.$axios.post(
-          `/owner/management/collection/delete/${this.id}`
-        );
-        if (response) {
-          this.$emit("update-collection", response);
+      if (this.groupId != null) {
+        try {
+          const response = await this.$axios.post(
+            `/management/group/${this.groupId}/collection/delete/${this.id}`
+          );
+          if (response) {
+            this.$emit("remove-collection", response);
+          }
+        } catch (error) {
+          this.$emit("remove-collection", error);
+          console.log(error);
         }
-      } catch (error) {
-        this.$emit("update-collection", error);
-        console.log(error);
+      } else {
+        try {
+          const response = await this.$axios.post(
+            `/owner/management/collection/delete/${this.id}`
+          );
+          if (response) {
+            this.$emit("remove-collection", response);
+          }
+        } catch (error) {
+          this.$emit("remove-collection", error);
+          console.log(error);
+        }
       }
     },
     async fetchCollectionById() {

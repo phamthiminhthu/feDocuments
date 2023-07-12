@@ -365,7 +365,6 @@ export default {
           },
         });
         if (response) {
-          console.log(response.data);
           this.snackbar = true;
           this.message = "Updated user successfully !"
         }
@@ -382,7 +381,6 @@ export default {
           confirmPassword: this.confirmPassword
         });
         if (response) {
-          console.log(response.data);
           this.dialog = false;
           this.snackbar = true;
           this.message = "Change Password successfully!"

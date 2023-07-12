@@ -42,10 +42,10 @@ export const actions = {
       console.log(error);
     }
   },
-  async fetchCollectionDetailsById({ commit }, { id }) {
+  async fetchCollectionDetailsById({ commit }, { id, groupId }) {
     try {
       const response = await this.$axios.get(
-        `/owner/management/collection/details/show/all/${id}`
+        `/owner/management/collection/details/show/all/${id}?groupId=${groupId}`
       );
       if (response) {
         const collectionDetails = response.data.content;

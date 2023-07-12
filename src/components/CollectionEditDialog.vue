@@ -42,6 +42,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    groupId: null,
   },
   mounted() {
     this.fetchCollectionById();
@@ -61,7 +62,7 @@ export default {
   data() {
     return {
       newCollectionName: null,
-      dialogModal: this.dialog
+      dialogModal: this.dialog,
     };
   },
   watch: {
@@ -73,20 +74,37 @@ export default {
     },
     dialog() {
       this.dialogModal = this.dialog;
-    }
+    },
   },
   methods: {
     async saveCollection() {
-      try {
-        const response = await this.$axios.post(
-          `/owner/management/collection/rename/${this.id}?name=${this.newCollectionName}`
-        );
-        if (response) {
-          this.$emit("update-collection", response);
+      if (this.groupId == null) {
+        try {
+          const response = await this.$axios.post(
+            `/owner/management/collection/rename/${this.id}?name=${this.newCollectionName}`
+          );
+          if (response) {
+            this.$emit("update-collection", response);
+          }
+        } catch (error) {
+          this.$emit("update-collection", error);
+          console.log(error);
         }
-      } catch (error) {
-        this.$emit("update-collection", error);
-        console.log(error);
+      } else {
+        const formData = new FormData();
+        formData.append("collectionName", this.newCollectionName);
+        try {
+          const response = await this.$axios.post(
+            `/management/group/${this.groupId}/collection/update/${this.id}`,
+            formData
+          );
+          if (response) {
+            this.$emit('update-collection', response);
+          }
+        } catch (error) {
+          this.$emit('update-collection', error);
+          console.log(error);
+        }
       }
     },
     closeDialog() {

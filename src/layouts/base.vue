@@ -38,8 +38,12 @@
                         <v-list-item
                           v-for="(subItem, i) in item.actions"
                           v-if="
-                            item.title !== 'Collections' ||
-                            i !== item.actions.length - 1
+                            (item.title !== 'Collections' &&
+                              i !== item.actions.length - 1) ||
+                            (item.title !== 'Groups' &&
+                              i !== item.actions.length - 1) ||
+                            item.title === 'Users' ||
+                            item.title === 'Dashboard'
                           "
                           :key="i"
                           link
@@ -86,11 +90,63 @@
                               </v-list>
                             </v-menu>
                           </v-list-item-action>
+                          <v-list-item-action v-if="item.title === 'Groups'">
+                            <v-menu open-on-hover right offset-x>
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  class="!shadow-none !bg-[#111827]"
+                                  icon
+                                >
+                                  <v-icon color="grey lighten-1" small>
+                                    mdi-dots-vertical
+                                  </v-icon>
+                                </v-btn>
+                              </template>
+                              <v-list>
+                                <v-list-item @click="renameGroup(subItem[3])">
+                                  <v-list-item-title>
+                                    Rename
+                                  </v-list-item-title>
+                                </v-list-item>
+                                <v-list-item v-if="subItem[4] == 1"
+                                  @click="removeGroup(subItem[3])"
+                                >
+                                  <v-list-item-title>
+                                    Remove
+                                  </v-list-item-title>
+                                </v-list-item>
+                                 <v-list-item
+                                    @click="manageGroup(subItem[3])"
+                                  >
+                                    <v-list-item-title>
+                                      Manage Group
+                                    </v-list-item-title>
+                                  </v-list-item>
+                              </v-list>
+                            </v-menu>
+                          </v-list-item-action>
                         </v-list-item>
                         <v-list-item
                           class="pl-8"
                           v-if="item.title === 'Collections'"
-                          @click="createCollection"
+                          @click="createDialog = true"
+                        >
+                          <v-list-item-icon class="mr-4 !mt-[23px]">
+                            <v-icon small>
+                              {{ item.actions[item.actions.length - 1][1] }}
+                            </v-icon>
+                          </v-list-item-icon>
+                          <v-list-item-title
+                            v-text="item.actions[item.actions.length - 1][0]"
+                            class="landing-font-12 italic"
+                          ></v-list-item-title>
+                        </v-list-item>
+                        <v-list-item
+                          class="pl-8"
+                          v-if="item.title === 'Groups'"
+                          @click="createDialogGroup = true"
                         >
                           <v-list-item-icon class="mr-4 !mt-[23px]">
                             <v-icon small>
@@ -125,7 +181,7 @@
         :dialog="createDialog"
         :parentCollectionId="null"
         @close-dialog="createDialog = false"
-        @create-collection="createSuccessfully"
+        @create-collection="createCollection"
       />
       <CollectionEditDialog
         v-if="idCollection"
@@ -139,7 +195,26 @@
         :id="idCollection"
         :dialog="removeDialog"
         @close-dialog="removeDialog = false"
-        @update-collection="updateAfterRemoveCollection"
+        @remove-collection="updateAfterRemoveCollection"
+      />
+      <GroupCreateDialog
+        :dialog="createDialogGroup"
+        @close-dialog="createDialogGroup = false"
+        @create-group="createGroup"
+      />
+      <GroupEditDialog
+        v-if="idGroup"
+        :id="idGroup"
+        :dialog="editDialogGroup"
+        @close-dialog="editDialogGroup = false"
+        @update-group="updateGroup"
+      />
+      <GroupRemoveDialog
+        v-if="idGroup"
+        :id="idGroup"
+        :dialog="deleteDialogGroup"
+        @close-dialog="deleteDialogGroup = false"
+        @delete-group="deleteGroup"
       />
     </v-container>
   </v-app>
@@ -160,6 +235,7 @@ export default {
     this.menus[this.selectedItem.groupIndex].active = true;
     this.subItemSelected = this.selectedItem.itemIndex;
     this.fetchAllCollectionsParent();
+    this.fetchAllGroups();
   },
   computed: {
     collectionParents() {
@@ -173,6 +249,22 @@ export default {
             "mdi-image-multiple",
             `/collections/${collection.id}`,
             collection.id,
+          ];
+        });
+      }
+    },
+    groups() {
+      return this.$store.getters["groups/getGroups"];
+    },
+    filterGroups() {
+      if (this.groups && Array.isArray(this.groups)) {
+        return this.groups.map((group) => {
+          return [
+            group.groupName,
+            "mdi-account-multiple-plus-outline",
+            `/groups/${group.id}`,
+            group.id,
+            group.statusOwner
           ];
         });
       }
@@ -198,14 +290,12 @@ export default {
       },
       {
         title: "Collections",
-        actions: [
-          ["New Collection", "mdi-new-box", "/dashboard/share-with-me"],
-        ],
+        actions: [["New Collection", "mdi-new-box"]],
         active: false,
       },
       {
         title: "Groups",
-        actions: [],
+        actions: [["New Group", "mdi-account-multiple-plus-outline"]],
         active: false,
       },
       {
@@ -226,17 +316,27 @@ export default {
     statusCreated: false,
     items: [{ title: "Rename" }, { title: "Remove" }],
     createDialog: false,
+    createDialogGroup: false,
     editDialog: false,
+    editDialogGroup: false,
+    deleteDialogGroup: false,
     idCollection: null,
+    idGroup: null,
     removeDialog: null,
   }),
   watch: {
     collectionParents() {
       if (this.filterCollections) {
-        this.menus[1].actions = [
-          ["New Collection", "mdi-new-box", "/dashboard/share-with-me"],
-        ];
+        this.menus[1].actions = [["New Collection", "mdi-new-box"]];
         this.menus[1].actions.unshift(...this.filterCollections);
+      }
+    },
+    groups() {
+      if (this.filterGroups) {
+        this.menus[2].actions = [
+          ["New Group", "mdi-account-multiple-plus-outline"],
+        ];
+        this.menus[2].actions.unshift(...this.filterGroups);
       }
     },
   },
@@ -262,11 +362,11 @@ export default {
     async fetchAllCollectionsParent() {
       await this.$store.dispatch("collections/fetchAllCollectionsParent");
     },
-    createCollection() {
-      this.createDialog = true;
+    async fetchAllGroups() {
+      await this.$store.dispatch("groups/fetchAllGroups");
     },
-    createSuccessfully(response) {
-      if (response.status == 200) {
+    createCollection(response) {
+      if (response.status == 201) {
         this.fetchAllCollectionsParent();
         this.createDialog = false;
         this.notifyCollection = true;
@@ -294,6 +394,45 @@ export default {
     updateAfterRemoveCollection() {
       this.fetchAllCollectionsParent();
       this.removeDialog = false;
+    },
+    createGroup(response) {
+      if (response.status == 200) {
+        this.fetchAllGroups();
+        this.createDialogGroup = false;
+        this.notifyCollection = true;
+        this.statusCreated = true;
+        this.messageNotification = "Create group successfully!";
+      } else {
+        this.createDialogGroup = true;
+        this.notifyCollection = true;
+        this.statusCreated = false;
+        this.messageNotification = "Can not create group!";
+      }
+    },
+    renameGroup(id) {
+      this.idGroup = id;
+      this.editDialogGroup = true;
+    },
+    updateGroup(response) {
+      if (response.status == 200) {
+        this.editDialogGroup = false;
+        this.fetchAllGroups();
+      } else {
+        this.editDialogGroup = true;
+        this.notifyCollection = true;
+        this.statusCreated = false;
+        this.messageNotification = "Can not update group!";
+      }
+    },
+    removeGroup(id) { 
+      this.idGroup = id;
+      this.deleteDialogGroup = true;
+    },
+    deleteGroup(respone) {
+      if (respone.status == 200) {
+        this.deleteDialogGroup = false;
+        this.fetchAllGroups();
+      }
     },
   },
 };

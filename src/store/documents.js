@@ -150,6 +150,32 @@ export const actions = {
     } catch (error) {
       console.log(error);
     }
+  },
+  async fetchDocumentsByTag({ commit }, { tagName }) { 
+    try {
+      const response = await this.$axios.get(
+        `/management/document/tag/find/documents/all?tagName=${tagName}`
+      );
+      if (response) { 
+        const documents = response.data.content;
+        commit("setDocuments", documents);
+      }
+    } catch (error) { 
+      console.log(error);
+    }
+  },
+  async fetchDocumentsByTypeDocs({ commit }, { typeName}) {
+    try {
+      const response = await this.$axios.get(
+        `/management/document/type/find/documents/all?typeName=${typeName}`
+      );
+      if (response) {
+        const documents = response.data.content;
+        commit("setDocuments", documents);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 

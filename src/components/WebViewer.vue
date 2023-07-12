@@ -52,6 +52,7 @@ export default {
             {
               path: "../webviewer",
               licenseKey: "VMeLR5MsW5lX3X9YfqQF",
+              
             },
             this.$refs.viewer
           ).then((instance) => {

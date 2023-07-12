@@ -29,13 +29,11 @@
               </v-col>
               <v-col cols="3">
                 <div class="following-list !fixed">
-                  <v-text-field
-                    v-model="searchKey"
-                    class="mx-4 w-4/5 mt-6 ml-6"
-                    label="Search"
-                    append-icon="mdi-magnify"
-                  ></v-text-field>
+                  <div class="search-items">
+                    <SearchDocument/>
+                  </div>
                   <v-list
+                  class="mt-8"
                     v-if="usersFollowing != null && usersFollowing.length > 0"
                   >
                     <v-subheader>Following</v-subheader>
@@ -87,12 +85,6 @@
               </v-col>
               <v-col cols="3">
                 <div class="following-list !fixed">
-                  <v-text-field
-                    v-model="searchKey"
-                    class="mx-4 w-4/5 mt-6 ml-6"
-                    label="Search"
-                    append-icon="mdi-magnify"
-                  ></v-text-field>
                   <v-list
                     v-if="usersSuggested != null && usersSuggested.length > 0"
                   >

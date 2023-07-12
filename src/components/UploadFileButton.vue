@@ -79,16 +79,22 @@ export default {
       type: String,
       default: null,
     },
+    groupId: {
+      type: String,
+      default: null,
+    },
   },
   methods: {
     triggerFileInput() {
       this.$refs.fileInput.$el.querySelector("input[type='file']").click();
     },
     async uploadFile() {
-      if (this.idCollection == null) {
+      if (this.idCollection == null && this.groupId == null) {
         this.uploadFileDocument();
-      } else {
-          this.uploadFileCollection();
+      } else if (this.groupId == null && this.idCollection != null) {
+        this.uploadFileCollection();
+      } else if (this.groupId != null) {
+        this.uploadFileOnGroup();
       }
     },
     async uploadFileDocument() {
@@ -135,6 +141,39 @@ export default {
         try {
           const response = await this.$axios.post(
             `/owner/management/collection/document/create?collectionId=${this.idCollection}`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+          if (response) {
+            this.$emit("upload-file", response);
+          }
+          this[l] = false;
+          this.loader = null;
+          this.snackbar = false;
+          this.snackbarSuccess = true;
+        } catch (error) {
+          this.$emit("upload-file", error);
+          console.log(error);
+          this[l] = false;
+          this.loader = null;
+          this.snackbar = false;
+          this.snackbarSuccess = false;
+        }
+      }
+    },
+    async uploadFileOnGroup() {
+      if (this.groupId && this.selectedFile) {
+        this.snackbarSuccess = false;
+        this.snackbar = true;
+        this.loader = "loading";
+        const l = this.loader;
+        this[l] = !this[l];
+        const formData = new FormData();
+        formData.append("file", this.selectedFile);
+        try {
+          this.idCollection = this.idCollection ? this.idCollection : null;
+          const response = await this.$axios.post(
+            `/management/group/${this.groupId}/document/create?collectionId=${this.idCollection}`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
           );

@@ -1,7 +1,7 @@
 <template>
-  <div v-if="collection">
+  <div v-if="groupDetails">
     <div class="text-center landing-title-page mb-16">
-      {{ collection.collectionName }}
+      {{ groupDetails.groupName }}
     </div>
     <div class="mx-auto">
       <v-list subheader two-line>
@@ -13,7 +13,7 @@
             dark
             color="indigo"
             small
-            @click="createDialog = true"
+            @click="createCollectionDialog = true"
           >
             <v-icon dark> mdi-plus </v-icon>
           </v-btn>
@@ -21,17 +21,17 @@
 
         <v-row
           class="p-4 mt-4"
-          v-if="collection.subCollectionDtoList.length > 0"
+          v-if="groupDetails['collectionDtoList'].length > 0"
         >
           <v-col
             cols="4"
-            v-for="folder in collection.subCollectionDtoList"
+            v-for="folder in groupDetails['collectionDtoList']"
             :key="folder.id"
           >
             <v-list-item
               class="rounded-xl"
               style="border: 2px solid #111827"
-              @click="redirectSubCollection(folder['id'])"
+              @click="redirectSubCollection(folder.id)"
             >
               <v-list-item-avatar>
                 <v-icon class="amber darken-3" dark> mdi-folder </v-icon>
@@ -71,37 +71,39 @@
           Files
           <UploadFileButton
             class="mx-3"
+            v-if="groupId"
             @upload-file="uploadFile"
             :idCollection="idCollection"
             :groupId="groupId"
           />
         </v-subheader>
-        <Documents
-          :documents="formattedDocuments"
-          @documents-updated="handleChangeListDocument"
-        />
         <CollectionCreateDialog
-          v-if="idCollection"
-          :dialog="createDialog"
+          v-if="groupId"
+          :dialog="createCollectionDialog"
           :parentCollectionId="idCollection"
           :groupId="groupId"
-          @close-dialog="createDialog = false"
-          @create-collection="createSuccessfully"
+          @close-dialog="createCollectionDialog = false"
+          @create-collection="createCollection"
         />
         <CollectionEditDialog
           v-if="currentId"
           :id="currentId"
-          :dialog="editDialog"
+          :dialog="editCollectionDialog"
           @update-collection="updateCollection"
-          @close-dialog="editDialog = false"
+          @close-dialog="editCollectionDialog = false"
         />
         <CollectionRemoveDialog
           v-if="currentId"
           :id="currentId"
+          :dialog="removeCollectionDialog"
           :groupId="groupId"
-          :dialog="removeDialog"
           @remove-collection="updateAfterRemoveCollection"
-          @close-dialog="removeDialog = false"
+          @close-dialog="removeCollectionDialog = false"
+        />
+        <Documents
+          :documents="formattedDocuments"
+          :status="collectionGroup"
+          @documents-updated="handleChangeListDocument"
         />
       </v-list>
       <NotifySnackbar :message="message" :status="status" :notify="notify" />
@@ -109,123 +111,104 @@
   </div>
 </template>
 <script>
-import { format, isToday } from "date-fns";
 export default {
   layout: "base",
   data() {
     return {
-      createDialog: false,
-      editDialog: false,
-      removeDialog: false,
       message: null,
       status: false,
       notify: false,
+      idCollection: null,
       currentId: null,
+      createCollectionDialog: false,
+      editCollectionDialog: false,
+      removeCollectionDialog: false,
+      collectionGroup: "collectionGroup"
     };
   },
-  props: {
-    idCollection: {
-      type: String,
-      default: null,
-      requried: true,
-    },
-    groupId: null,
-  },
   mounted() {
-    return this.fetchDataCollection();
+    this.fetchDataGroupById();
   },
   computed: {
-    collection() {
-      return this.$store.getters["collections/getCollectionDetails"];
+    groupId() {
+      return this.$route.params.id;
+    },
+    groupDetails() {
+      return this.$store.getters["groups/getGroupDetails"];
     },
     formattedDocuments() {
-      return this.collection.documentDtoList.map((document) => ({
+      return this.groupDetails["documentDtoList"].map((document) => ({
         ...document,
         id: document.documentKey,
       }));
     },
   },
   methods: {
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      if (isToday(date)) {
-        return format(date, "hh:mm");
-      } else {
-        return format(date, "dd/MM/yyyy");
-      }
-    },
-    async fetchDataCollection() {
-      if (this.idCollection) {
-        await this.$store.dispatch("collections/fetchCollectionDetailsById", {
-          id: this.idCollection,
-          groupId: this.groupId ? this.groupId : null,
+    async fetchDataGroupById() {
+      if (this.groupId) {
+        await this.$store.dispatch("groups/fetchDataGroupDetails", {
+          groupId: this.groupId,
         });
       }
     },
-    redirectSubCollection(id) {
-      if (this.groupId == null) {
-        this.$router.push(`/collections/${id}`);
-      } else {
-        this.$router.push(`/groups/${this.groupId}/collections/${id}`);
-      }
+    handleChangeListDocument() {
+      this.fetchDataGroupById();
     },
-    createSuccessfully(respone) {
-      if (respone.status == 200) {
-        this.fetchDataCollection();
+    createCollection(response) {
+      if (response.status == 200) {
+        this.fetchDataGroupById();
+        this.createCollectionDialog = false;
         this.notify = true;
         this.status = true;
-        this.message = "Create Collections Successfully!";
-        this.createDialog = false;
+        this.message = "Create collection successfully!";
       } else {
         this.notify = true;
         this.status = false;
         this.message = "Collection name already exists!";
-        this.createDialog = true;
       }
     },
     renameCollection(id) {
       this.currentId = id;
-      this.editDialog = true;
+      this.editCollectionDialog = true;
     },
     updateCollection(response) {
-      if (response.status === 200) {
-        this.fetchDataCollection();
-        this.editDialog = false;
+      if (response.status == 200) {
+        this.fetchDataGroupById();
+        this.editCollectionDialog = false;
         this.notify = true;
         this.status = true;
-        this.message = "Updated Collections Successfully!";
+        this.message = "Update collection successfully!";
       } else {
         this.notify = true;
         this.status = false;
         this.message = "Collection name already exists!";
-        this.editDialog = true;
       }
     },
     removeCollection(id) {
       this.currentId = id;
-      this.removeDialog = true;
+      this.removeCollectionDialog = true;
     },
     updateAfterRemoveCollection(response) {
-      if (response.status === 200) {
-        this.fetchDataCollection();
+      if (response.status == 200) {
+        this.fetchDataGroupById();
+        this.removeCollectionDialog = false;
         this.notify = true;
         this.status = true;
-        this.message = "Delete Collections Successfully!";
-        this.removeDialog = false;
+        this.message = "Remove collection successfully!";
       } else {
         this.notify = true;
         this.status = false;
-        this.message = "Delete Collection Failed!";
-        this.removeDialog = true;
+        this.message = "Remove collection failed!";
       }
+    },
+    redirectSubCollection(id) {
+      this.$router.push(`/groups/${this.groupId}/collections/${id}`);
     },
     uploadFile(response) {
-      if (response.status === 200) {
-        this.fetchDataCollection();
+      console.log("Uploading file");
+      if (response.status == 200) {
+        this.fetchDataGroupById();
       }
-    },
-    handleChangeListDocument() {
-      this.fetchDataCollection();
     },
   },
 };
