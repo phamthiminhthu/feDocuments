@@ -110,20 +110,28 @@
                                     Rename
                                   </v-list-item-title>
                                 </v-list-item>
-                                <v-list-item v-if="subItem[4] == 1"
+                                <v-list-item @click="manageGroup(subItem[3])">
+                                  <v-list-item-title>
+                                    Manage Group
+                                  </v-list-item-title>
+                                </v-list-item>
+                                <v-divider />
+                                <v-list-item
+                                  v-if="subItem[4] == 1"
                                   @click="removeGroup(subItem[3])"
                                 >
                                   <v-list-item-title>
                                     Remove
                                   </v-list-item-title>
                                 </v-list-item>
-                                 <v-list-item
-                                    @click="manageGroup(subItem[3])"
-                                  >
-                                    <v-list-item-title>
-                                      Manage Group
-                                    </v-list-item-title>
-                                  </v-list-item>
+                                <v-list-item
+                                  v-if="subItem[4] == 0"
+                                  @click="leaveGroup(subItem[3])"
+                                >
+                                  <v-list-item-title>
+                                    Leave Group
+                                  </v-list-item-title>
+                                </v-list-item>
                               </v-list>
                             </v-menu>
                           </v-list-item-action>
@@ -216,6 +224,19 @@
         @close-dialog="deleteDialogGroup = false"
         @delete-group="deleteGroup"
       />
+      <GroupManageDialog
+        v-if="idGroup"
+        :groupId="idGroup"
+        :dialog="manageGroupDialog"
+        @close-dialog="manageGroupDialog = false"
+      />
+      <GroupLeaveDialog
+        v-if="idGroup"
+        :dialog="leaveGroupDialog"
+        :groupId="idGroup"
+        @leave-group="updateleaveGroup"
+        @close-dialog="leaveGroupDialog = false"
+      />
     </v-container>
   </v-app>
 </template>
@@ -264,7 +285,7 @@ export default {
             "mdi-account-multiple-plus-outline",
             `/groups/${group.id}`,
             group.id,
-            group.statusOwner
+            group.statusOwner,
           ];
         });
       }
@@ -323,6 +344,8 @@ export default {
     idCollection: null,
     idGroup: null,
     removeDialog: null,
+    manageGroupDialog: false,
+    leaveGroupDialog: false,
   }),
   watch: {
     collectionParents() {
@@ -424,7 +447,7 @@ export default {
         this.messageNotification = "Can not update group!";
       }
     },
-    removeGroup(id) { 
+    removeGroup(id) {
       this.idGroup = id;
       this.deleteDialogGroup = true;
     },
@@ -434,6 +457,29 @@ export default {
         this.fetchAllGroups();
       }
     },
+    manageGroup(id) {
+      this.idGroup = id;
+      this.manageGroupDialog = true;
+    },
+    leaveGroup(id) {
+      this.idGroup = id;
+      this.leaveGroupDialog = true;
+      console.log(id);
+    },
+    updateleaveGroup(response) {
+      if (response.status == 200) {
+        this.fetchAllGroups();
+        this.leaveGroupDialog = false;
+        this.notifyCollection = true;
+        this.statusCreated = true;
+        this.messageNotification = "Leave group successfully!";
+      } else {
+        this.leaveGroupDialog = true;
+        this.notifyCollection = true;
+        this.statusCreated = false;
+        this.messageNotification = "Leave group failed!";
+      }
+    }
   },
 };
 </script>

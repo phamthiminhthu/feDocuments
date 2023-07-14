@@ -22,7 +22,8 @@
 </template>
 
 <script>
-import PDFJSExpress from "@pdftron/pdfjs-express-viewer";
+// import PDFJSExpress from "@pdftron/pdfjs-express-viewer";
+import WebViewer from '@pdftron/webviewer'
 
 export default {
   props: {
@@ -47,16 +48,21 @@ export default {
         );
 
         if (response) {
+          console.log(response);
           const blob = new Blob([response.data], { type: "application/pdf" });
-          PDFJSExpress(
+          const url = URL.createObjectURL(blob)
+          WebViewer(
             {
-              path: "../webviewer",
-              licenseKey: "VMeLR5MsW5lX3X9YfqQF",
-              
+              path: "../public",
+              enableAnnotations: true,
+              enableOfficeEditing: true,
+              initialDoc: url
             },
             this.$refs.viewer
           ).then((instance) => {
-            instance.UI.loadDocument(blob, { filename: "file.pdf" });
+            // instance.UI.loadDocument(blob, { filename: "file.pdf" });
+            instance.UI.setLanguage("en"); 
+            instance.UI.enableFeatures([instance.UI.Feature.MultiTab])
 
             const { Core, UI } = instance;
 

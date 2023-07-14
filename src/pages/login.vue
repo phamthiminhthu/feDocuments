@@ -150,6 +150,7 @@ export default {
           password: this.password,
         });
         if (response) {
+          console.log("success", response);
           this.showModal = true;
           this.messageSuccess = "Login successfully";
           this.$store.dispatch("auth/login", { token: response.content });
@@ -164,7 +165,8 @@ export default {
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          console.log(error.response);
+          console.log(error);
+          this.messageSuccess = "Login failed";
           this.snackbarText = error.response.data.content;
           this.snackbarColor = "error";
         } else {

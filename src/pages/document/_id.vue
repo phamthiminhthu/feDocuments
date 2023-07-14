@@ -1,6 +1,6 @@
 <template>
   <div id="pdf-viewer">
-    <WebViewer :path="`${publicPath}webviewer`" :documentKey="documentKey" v-if="documentKey" />
+    <WebViewer :documentKey="documentKey" v-if="documentKey" />
   </div>
 </template>
 
@@ -9,7 +9,6 @@ export default {
   name: 'PdfViewer',
   data() {
     return {
-      publicPath: process.env.BASE_URL,
       documentKey: ""
     }
   },

@@ -23,7 +23,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          color="green darken-1"
+          color="success"
           text
           :disabled="collectionName == null"
           @click="createCollection"
@@ -52,7 +52,7 @@ export default {
     return {
       collectionNameRules: [(v) => !!v || "Collection Name is required"],
       collectionName: null,
-      dialogModal: false,
+      dialogModal: this.dialog,
     };
   },
   watch: {

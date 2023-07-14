@@ -140,9 +140,9 @@
               <v-list-item
                 link
                 @click="addToCollectionGroup"
-                v-if="status === 'collectionGroup'"
+                v-if="groupId != null"
               >
-                <v-list-item-title>Add To Collection</v-list-item-title>
+                <v-list-item-title>Add To Group's Collection</v-list-item-title>
               </v-list-item>
               <v-list-item link>
                 <v-list-item-title @click="addToGroup">
@@ -155,7 +155,11 @@
             <span>Recents</span>
             <v-icon>mdi-history</v-icon>
           </v-btn>
-          <v-btn @click="deleteDocument">
+          <v-btn @click="deleteDocumentFromGroup" v-if="groupId != null">
+            <span>Delete</span>
+            <v-icon>mdi-delete-circle</v-icon>
+          </v-btn>
+          <v-btn @click="deleteDocument" v-if="groupId == null">
             <span>Move To Trash</span>
             <v-icon>mdi-delete-circle</v-icon>
           </v-btn>
@@ -257,7 +261,7 @@ export default {
       collections: [],
       addGroupDialog: false,
       groups: [],
-      addToCollectionGroupDialog: false
+      addToCollectionGroupDialog: false,
     };
   },
   props: {
@@ -269,6 +273,7 @@ export default {
       type: String,
       default: null,
     },
+    groupId: null,
   },
   computed: {
     formattedDocuments() {
@@ -352,19 +357,27 @@ export default {
     },
     async deleteDocument() {
       let documentsMoveToTrash = this.selected.map((doc) => doc.id);
-      console.log(documentsMoveToTrash);
-      try {
-        const response = await this.$axios.post(
-          "/management/document/delete/trash",
-          documentsMoveToTrash
-        );
-        if (response) {
-          this.sheet = false;
-          this.$emit("documents-updated");
-          this.selected = [];
+      if (this.groupId == null) {
+        try {
+          const response = await this.$axios.post(
+            "/management/document/delete/trash",
+            documentsMoveToTrash
+          );
+          if (response) {
+            this.sheet = false;
+            this.$emit("documents-updated");
+            this.selected = [];
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      }
+    },
+    async deleteDocumentFromGroup() {
+      if (this.groupId != null) {
+        let documentsMoveToTrash = this.selected.map((doc) => doc.id);
+        this.$emit("delete-documents-group", documentsMoveToTrash);
+        this.selected = [];
       }
     },
     async putBackDocs() {
@@ -409,24 +422,47 @@ export default {
       await this.$store.dispatch("collections/fetchAllCollections");
     },
     async addDocumentCollection(collections) {
-      if (
-        collections.length > 0 &&
-        this.formatDocumentsToCollections.length > 0
-      ) {
-        try {
-          const response = await this.$axios.post(
-            "/owner/management/collection/document/move/documents",
-            {
-              idCollections: collections,
-              documentKeys: this.formatDocumentsToCollections,
+      if (this.groupId == null) {
+        if (
+          collections.length > 0 &&
+          this.formatDocumentsToCollections.length > 0
+        ) {
+          try {
+            const response = await this.$axios.post(
+              "/owner/management/collection/document/move/documents",
+              {
+                idCollections: collections,
+                documentKeys: this.formatDocumentsToCollections,
+              }
+            );
+            if (response) {
+              this.addCollectionDialog = false;
+              this.selected = [];
             }
-          );
-          if (response) {
-            this.addCollectionDialog = false;
-            this.selected = [];
+          } catch (error) {
+            console.log(error);
           }
-        } catch (error) {
-          console.log(error);
+        }
+      } else {
+        if (
+          collections.length > 0 &&
+          this.formatDocumentsToCollections.length > 0
+        ) {
+          try {
+            const response = await this.$axios.post(
+              `/management/group/${this.groupId}/collection/move/documents`,
+              {
+                idCollections: collections,
+                documentKeys: this.formatDocumentsToCollections,
+              }
+            );
+            if (response) {
+              this.addCollectionDialog = false;
+              this.selected = [];
+            }
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     },
@@ -453,12 +489,18 @@ export default {
     async fetchAllGroups() {
       await this.$store.dispatch("groups/fetchAllGroups");
     },
-    addToCollectionGroup() {
+    async addToCollectionGroup() {
+      await this.fetchCollectionsGroup();
+      this.collections = this.$store.getters["groups/getCollectionsGroup"];
       this.addCollectionDialog = true;
     },
-    async fetchAllCollectionsGroup() {
-      
-    }
+    async fetchCollectionsGroup() {
+      if (this.groupId) {
+        await this.$store.dispatch("groups/fetchCollectionGroup", {
+          groupId: this.groupId,
+        });
+      }
+    },
   },
 };
 </script>

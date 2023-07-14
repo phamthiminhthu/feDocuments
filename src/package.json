@@ -15,6 +15,7 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/proxy": "^2.1.0",
     "@pdftron/pdfjs-express-viewer": "^8.7.4",
+    "@pdftron/webviewer": "^10.2.3",
     "cookie-universal-nuxt": "^2.2.2",
     "core-js": "^3.25.3",
     "date-fns": "^2.30.0",

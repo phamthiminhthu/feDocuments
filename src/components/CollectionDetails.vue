@@ -78,7 +78,9 @@
         </v-subheader>
         <Documents
           :documents="formattedDocuments"
+          :groupId="groupId"
           @documents-updated="handleChangeListDocument"
+          @delete-documents-group="deleteDocumentGroup"
         />
         <CollectionCreateDialog
           v-if="idCollection"
@@ -98,7 +100,6 @@
         <CollectionRemoveDialog
           v-if="currentId"
           :id="currentId"
-          :groupId="groupId"
           :dialog="removeDialog"
           @remove-collection="updateAfterRemoveCollection"
           @close-dialog="removeDialog = false"
@@ -227,6 +228,22 @@ export default {
     handleChangeListDocument() {
       this.fetchDataCollection();
     },
+    async deleteDocumentGroup(documentKeys) {
+      if (this.groupId != null && documentKeys != null) {
+          try {
+            const id = this.idCollection ? this.idCollection : null;
+            const response = await this.$axios.post(`/management/group/${this.groupId}/document/delete?collectionId=${id}`,
+              documentKeys
+            )
+            if (response) {
+              console.log(response);
+              this.fetchDataCollection();
+            }
+          } catch (error) {
+            console.log(error);
+          }
+     }
+    }
   },
 };
 </script>
