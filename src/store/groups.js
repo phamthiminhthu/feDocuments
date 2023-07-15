@@ -7,6 +7,7 @@ export const state = () => {
     groupName: null,
     members: null,
     pendingInvites: null,
+    invitations: null,
   };
 };
 
@@ -32,6 +33,9 @@ export const mutations = {
   setPendingInvites(state, value) {
     state.pendingInvites = value;
   },
+  setInvitations(state, value) {
+    state.invitations = value;
+  },
 };
 
 export const getters = {
@@ -42,6 +46,7 @@ export const getters = {
   getGroupName: (state) => state.groupName,
   getMembers: (state) => state.members,
   getPendingInvites: (state) => state.pendingInvites,
+  getInvitations: (state) => state.invitations,
 };
 export const actions = {
   async fetchAllGroups({ commit }) {
@@ -121,6 +126,19 @@ export const actions = {
       );
       if (response) {
         commit("setPendingInvites", response.data.content);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async fetchAllInvitationsGroup({ commit }) {
+    try {
+      const response = await this.$axios.get(
+        `/management/group/invitations/pending`
+      );
+      if (response) {
+        console.log(response.data.content);
+        commit("setInvitations", response.data.content);
       }
     } catch (error) {
       console.log(error);

@@ -45,7 +45,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="success" text @click="shareGroupUser"> Share </v-btn>
+        <v-btn color="success" text @click="shareGroupUser"> Invite </v-btn>
         <v-btn color="green darken-1" text @click="closeDialog"> Cancel </v-btn>
         <v-snackbar
           timeout="3000"
@@ -131,6 +131,7 @@ export default {
           this.message = "Invite user successfully!";
           this.status = true;
           this.snackbar = true;
+          this.select = [];
           this.$emit("update-invite");
         }
       } catch (e) {

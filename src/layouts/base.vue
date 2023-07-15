@@ -325,6 +325,7 @@ export default {
           ["Profile", "mdi-face-man-profile", "/", false],
           ["Following", "mdi-account-star", "/following", false],
           ["Follower", "mdi-account-heart", "/follower", false],
+          ["Pending Invites", " mdi-account-plus", "/pending-invites", false],
         ],
         active: false,
       },

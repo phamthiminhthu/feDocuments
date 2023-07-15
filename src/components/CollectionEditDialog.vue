@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialogModal" max-width="500px">
-    <v-card v-if="collection">
+    <v-card v-if="collectionName">
       <v-card-title>
         <span>Edit Collection Name</span>
         <v-spacer></v-spacer>

@@ -296,7 +296,7 @@ export default {
     formatDate(dateString) {
       const date = new Date(dateString);
       if (isToday(date)) {
-        return format(date, "hh:mm");
+        return format(date, "hh:mm aa");
       } else {
         return format(date, "dd/MM/yyyy");
       }

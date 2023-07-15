@@ -1,5 +1,5 @@
 <template>
-  <v-card class="edit-card-document">
+  <v-card class="edit-card-document" v-if="document">
     <v-card-title>
       <span class="text-h5">Edit Information</span>
       <v-spacer></v-spacer>
@@ -60,6 +60,7 @@
                 outlined
                 clearable
                 class="mt-2"
+                required
               ></v-text-field>
             <span class="subheading">Document's Summary</span>
             <v-textarea

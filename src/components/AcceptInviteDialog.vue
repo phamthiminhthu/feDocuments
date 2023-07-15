@@ -2,8 +2,9 @@
   <v-dialog v-model="dialogModal" persistent max-width="500px">
     <v-card v-if="id">
       <v-card-title>
-        <span>Accept Invite Group</span>
+        <span>Accept Invite</span>
         <v-spacer></v-spacer>
+        <v-icon large @click="closeDialog" color="black">mdi-alpha-x</v-icon>
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -20,7 +21,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="success" text @click="joinGroup"> Accept </v-btn>
-        <v-btn color="primary" text @click="closeDialog"> Decline </v-btn>
+        <v-btn color="primary" text @click="declineGroup"> Decline </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -69,6 +70,19 @@ export default {
       } catch (error) {
         this.$emit("accept-invite", error);
         console.log(error);
+      }
+    },
+    async declineGroup() {
+      try {
+        const response = await this.$axios.post(
+          `/management/group/${this.id}/invite/decline`
+        );
+        if (response) {
+          this.$emit("decline-invite", response);
+        }
+      } catch (error) {
+        console.log(error);
+        this.$emit("decline-invite", error);
       }
     },
     closeDialog() {
