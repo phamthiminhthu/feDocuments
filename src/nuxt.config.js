@@ -8,6 +8,7 @@ export default {
     port: 3000,
     host: "0.0.0.0",
   },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: "%s - app",
@@ -40,15 +41,15 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    "@nuxt/typescript-build",
+    // // https://go.nuxtjs.dev/typescript
+    // "@nuxt/typescript-build",
     // https://go.nuxtjs.dev/vuetify
     "@nuxtjs/vuetify",
   ],
 
   //Modules: nuxtjs/proxy
   modules: [
-    "@nuxtjs/proxy",
+    // "@nuxtjs/proxy",
     ["@nuxtjs/axios", { baseURL: "http://localhost:8080/api/v1" }],
     "cookie-universal-nuxt",
   ],
