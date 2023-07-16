@@ -53,7 +53,7 @@ export default {
           const url = URL.createObjectURL(blob)
           WebViewer(
             {
-              path: "../public",
+              path: "../webviewer",
               enableAnnotations: true,
               enableOfficeEditing: true,
               initialDoc: url
