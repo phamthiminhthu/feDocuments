@@ -11,9 +11,7 @@ RUN apk update && \
   npm install -g node-gyp
 
 RUN apk add python3 && \
-  apk add --no-cache make g++ cairo-dev pango-dev libpng-dev jpeg-dev giflib-dev librsvg-dev pixman-dev && \
-  apk add --no-cache \
-    pkgconfig cairo pango libpng jpeg giflib librsvg pixman
+  apk add --no-cache make g++ cairo-dev pango-dev libpng-dev jpeg-dev giflib-dev librsvg-dev pixman-dev
 
 
 ENV PATH $HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH
