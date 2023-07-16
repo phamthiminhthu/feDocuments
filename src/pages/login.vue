@@ -18,7 +18,7 @@
               style="border-radius: 50%"
             />
           </div>
-          <div class="landing-font-44 mt-6 text-center">abc Hello Again!</div>
+          <div class="landing-font-44 mt-6 text-center">Hello Again!</div>
           <form @submit="handleLogin">
             <div class="mt-20">
               <label
