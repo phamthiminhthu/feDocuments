@@ -30,10 +30,17 @@
               <v-col cols="3">
                 <div class="following-list !fixed">
                   <div class="search-items">
-                    <SearchDocument/>
+                    <SearchPublicButton
+                      @search-document-by-tags="searchDocumentByTag"
+                      @search-document-by-type-docs="searchDocumentByTypeDocs"
+                      @search-user-by-username-or-fullname="
+                        searchUserByUsernameOrFullname
+                      "
+                      @search-user-by-email="searchUserByEmail"
+                    />
                   </div>
                   <v-list
-                  class="mt-8"
+                    class="mt-8"
                     v-if="usersFollowing != null && usersFollowing.length > 0"
                   >
                     <v-subheader>Following</v-subheader>
@@ -136,7 +143,7 @@ export default {
     return {
       tab: null,
       items: ["Following", "Recommended For You"],
-      itemsTypeSearch: ['Tag', 'Type Document', 'User', 'Title Document'],
+      itemsTypeSearch: ["Tag", "Type Document", "User", "Title Document"],
       selectedType: null,
       searchKey: null,
     };
@@ -194,6 +201,26 @@ export default {
     },
     handleDocumentUpdatedSuggestedForYou() {
       this.getAllDocumentsSuggested();
+    },
+    async searchDocumentByTag(tags) {
+      this.$router.push(
+        `/home/search?type=tag&query=${encodeURIComponent(tags)}`
+      );
+    },
+    async searchDocumentByTypeDocs(typeDocs) {
+      this.$router.push(
+        `/home/search?type=typeDocs&query=${encodeURIComponent(typeDocs)}`
+      );
+    },
+    async searchUserByUsernameOrFullname(name) {
+      this.$router.push(
+        `/home/search?type=name&query=${encodeURIComponent(name)}`
+      );
+    },
+    async searchUserByEmail(email) {
+      this.$router.push(
+        `/home/search?type=email&query=${encodeURIComponent(email)}`
+      );
     },
   },
 };

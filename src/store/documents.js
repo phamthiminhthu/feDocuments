@@ -1,8 +1,6 @@
 export const state = () => ({
   documents: null,
-  suggestedByTab: null,
   suggestedDocs: null,
-  suggestedByTypeDocs: null,
   suggestedUserList: null
 });
 
@@ -10,18 +8,12 @@ export const mutations = {
   setDocuments(state, value) {
     state.documents = value;
   },
-  setSuggestedByTab(state, value) {
-    state.suggestedByTab = value;
-  },
-  setSuggestedByTypeDocs(state, value) {
-    state.suggestedByTypeDocs = value;
-  },
   setSuggestedDocs(state, value) {
     state.suggestedDocs = value;
   },
-  setSuggestedUserList(state, value) { 
+  setSuggestedUserList(state, value) {
     state.suggestedUserList = value;
-  }
+  },
 };
 
 export const actions = {
@@ -64,16 +56,16 @@ export const actions = {
   },
   async fetchDocumentsPublicByUsername({ commit }, { username }) {
     try {
-          const response = await this.$axios.get(
-            `/management/document/show/public/by-username?username=${username}`
-          );
+      const response = await this.$axios.get(
+        `/management/document/show/public/by-username?username=${username}`
+      );
       if (response) {
-            const documents = response.data.content;
-            commit("setDocuments", documents);
-          }
-        } catch (error) {
-          console.log(error);
-        }
+        const documents = response.data.content;
+        commit("setDocuments", documents);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   },
   async fetchDocumentSharedWithMe({ commit }) {
     try {
@@ -138,7 +130,7 @@ export const actions = {
       console.log(error);
     }
   },
-  async fetchUsersSuggested({ commit }) { 
+  async fetchUsersSuggested({ commit }) {
     try {
       const response = await this.$axios.get(
         "/management/document/suggest/user/show/all"
@@ -151,20 +143,20 @@ export const actions = {
       console.log(error);
     }
   },
-  async fetchDocumentsByTag({ commit }, { tagName }) { 
+  async fetchDocumentsByTag({ commit }, { tagName }) {
     try {
       const response = await this.$axios.get(
         `/management/document/tag/find/documents/all?tagName=${tagName}`
       );
-      if (response) { 
+      if (response) {
         const documents = response.data.content;
         commit("setDocuments", documents);
       }
-    } catch (error) { 
+    } catch (error) {
       console.log(error);
     }
   },
-  async fetchDocumentsByTypeDocs({ commit }, { typeName}) {
+  async fetchDocumentsByTypeDocs({ commit }, { typeName }) {
     try {
       const response = await this.$axios.get(
         `/management/document/type/find/documents/all?typeName=${typeName}`
@@ -176,13 +168,11 @@ export const actions = {
     } catch (error) {
       console.log(error);
     }
-  }
+  },
 };
 
 export const getters = {
   getDocuments: (state) => state.documents,
-  getSuggestedByTab: (state) => state.suggestedByTab,
-  getSuggestedByTypeDocs: (state) => state.suggestedByTypeDocs,
   getSuggestedDocs: (state) => state.suggestedDocs,
-  getSuggestedUserList: (state) => state.suggestedUserList
+  getSuggestedUserList: (state) => state.suggestedUserList,
 };

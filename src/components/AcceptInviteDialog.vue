@@ -49,7 +49,6 @@ export default {
   },
   computed: {
     groupName() {
-      console.log(this.$store.getters["groups/getGroupName"]);
       return this.$store.getters["groups/getGroupName"];
     },
   },
