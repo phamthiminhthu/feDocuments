@@ -389,9 +389,9 @@ export default {
     async fetchAllGroups() {
       await this.$store.dispatch("groups/fetchAllGroups");
     },
-    createCollection(response) {
-      if (response.status == 201) {
-        this.fetchAllCollectionsParent();
+    async createCollection(response) {
+      if (response.status == 200) {
+        await this.fetchAllCollectionsParent();
         this.createDialog = false;
         this.notifyCollection = true;
         this.statusCreated = true;
@@ -480,7 +480,7 @@ export default {
         this.statusCreated = false;
         this.messageNotification = "Leave group failed!";
       }
-    }
+    },
   },
 };
 </script>

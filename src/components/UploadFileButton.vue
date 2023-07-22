@@ -11,6 +11,16 @@
         Upload File
         <v-icon right dark>mdi-cloud-upload</v-icon>
       </v-btn>
+      <v-alert
+        dense
+        outlined
+        type="error"
+        v-model="notify"
+        dismissible
+        class="w-2/5"
+      >
+        {{ errorMessages }}
+      </v-alert>
       <v-file-input
         ref="fileInput"
         v-model="selectedFile"
@@ -21,8 +31,8 @@
         accept="application/pdf"
         placeholder="File Document Upload"
         label="File Upload"
-        class="px-4"
         hide-input
+        class="px-4"
         prepend-icon=""
         @change="uploadFile"
       ></v-file-input>
@@ -67,11 +77,13 @@ export default {
       rules: [
         (value) =>
           !value ||
-          value.size < 16000000 ||
-          "Avatar size should be less than 9 MB!",
+          value.size < 18000000 ||
+          "File size should be less than 18 MB!",
       ],
+      errorMessages: "",
       snackbar: false,
       snackbarSuccess: false,
+      notify: false,
     };
   },
   props: {
@@ -98,7 +110,7 @@ export default {
       }
     },
     async uploadFileDocument() {
-      if (this.selectedFile) {
+      if (this.selectedFile && this.selectedFile.size <= 18000000) {
         this.snackbarSuccess = false;
         this.snackbar = true;
         this.loader = "loading";
@@ -127,10 +139,17 @@ export default {
           this.snackbar = false;
           this.snackbarSuccess = false;
         }
+      } else if (this.selectedFile && this.selectedFile.size > 18000000) {
+        this.errorMessages = "File size should be less than 18 MB!";
+        this.notify = true;
       }
     },
     async uploadFileCollection() {
-      if (this.selectedFile && this.idCollection) {
+      if (
+        this.selectedFile &&
+        this.idCollection &&
+        this.selectedFile.size <= 18000000
+      ) {
         this.snackbarSuccess = false;
         this.snackbar = true;
         this.loader = "loading";
@@ -159,10 +178,21 @@ export default {
           this.snackbar = false;
           this.snackbarSuccess = false;
         }
+      } else if (
+        this.selectedFile &&
+        this.idCollection &&
+        this.selectedFile.size > 18000000
+      ) {
+        this.errorMessages = "File size should be less than 18 MB!";
+        this.notify = true;
       }
     },
     async uploadFileOnGroup() {
-      if (this.groupId && this.selectedFile) {
+      if (
+        this.groupId &&
+        this.selectedFile &&
+        this.selectedFile.size <= 18000000
+      ) {
         this.snackbarSuccess = false;
         this.snackbar = true;
         this.loader = "loading";
@@ -192,6 +222,13 @@ export default {
           this.snackbar = false;
           this.snackbarSuccess = false;
         }
+      } else if (
+        this.groupId &&
+        this.selectedFile &&
+        this.selectedFile.size > 18000000
+      ) {
+        this.errorMessages = "File size should be less than 18 MB!";
+        this.notify = true;
       }
     },
   },

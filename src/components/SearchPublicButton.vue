@@ -28,9 +28,9 @@
             </v-list-item-content>
 
             <v-list-item-action>
-              <v-icon large @click="menu = false" color="black"
-                >mdi-alpha-x</v-icon
-              >
+              <v-icon large @click="menu = false" color="black"> 
+                mdi-alpha-x
+              </v-icon>
             </v-list-item-action>
           </v-list-item>
         </v-list>
@@ -129,7 +129,10 @@ export default {
       } else if (this.model == "tab-typeDocs") {
         this.$emit("search-document-by-type-docs", this.searchByTypeDocs);
       } else if (this.model == "tab-user") {
-        this.$emit("search-user-by-username-or-fullname", this.searchUserByUsernameOrFullname);
+        this.$emit(
+          "search-user-by-username-or-fullname",
+          this.searchUserByUsernameOrFullname
+        );
       } else if (this.model == "tab-email") {
         this.$emit("search-user-by-email", this.searchUserByEmail);
       }

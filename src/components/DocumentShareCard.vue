@@ -7,6 +7,10 @@
       <v-container>
         <v-row>
           <v-col cols="12" class="!p-[5px] mt-3">
+            <v-subheader class="!pl-0 italic">
+              The document can only be shared with emails that already exist in
+              the system.
+            </v-subheader>
             <v-combobox
               v-model="select"
               :items="items"
@@ -133,7 +137,14 @@
 
       <v-spacer></v-spacer>
       <v-btn color="blue darken-1" text @click="closeDialog"> Close </v-btn>
-      <v-btn color="blue darken-1" text @click="shareDocs"> Share </v-btn>
+      <v-btn
+        color="blue darken-1"
+        :disabled="this.select.length == 0"
+        text
+        @click="shareDocs"
+      >
+        Share
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>

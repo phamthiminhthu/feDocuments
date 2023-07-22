@@ -64,6 +64,7 @@ export default {
     async createCollection(e) {
       e.preventDefault();
       if (this.groupId == null) {
+        console.log(this.collectionName);
         if (this.collectionName != null) {
           try {
             let collectionModel = {

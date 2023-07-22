@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialogModal" max-width="500px">
-    <v-card v-if="group">
+    <v-card v-if="groupName">
       <v-card-title>
         <span>Edit Group Name</span>
         <v-spacer></v-spacer>
@@ -24,8 +24,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="saveGroup"> Save </v-btn>
-        <v-btn color="primary" text @click="closeDialog"> Close </v-btn>
+        <v-btn color="blue darken-1" text @click="saveGroup"> Save </v-btn>
+        <v-btn color="green darken-1" text @click="closeDialog"> Close </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -43,19 +43,9 @@ export default {
       default: false,
     },
   },
-  mounted() {
-    this.fetchGroupById();
-  },
   computed: {
-    group() {
-      return this.$store.getters["groups/getGroupDetails"];
-    },
-    groupName: {
-      get: function () {
-        if (this.group != null) {
-          return this.group.groupName;
-        }
-      },
+    groupName() {
+      return this.$store.getters["groups/getGroupName"];
     },
   },
   data() {
@@ -85,6 +75,7 @@ export default {
           formData
         );
         if (response) {
+          this.fetchDetailsGroup();
           this.$emit("update-group", response);
         }
       } catch (error) {
@@ -97,10 +88,15 @@ export default {
       this.$emit("close-dialog");
     },
     async fetchGroupById() {
-      await this.$store.dispatch("groups/fetchDataGroupDetails", {
+      await this.$store.dispatch("groups/fetchGroupNameById", {
         groupId: this.id,
       });
     },
+    async fetchDetailsGroup() {
+      await this.$store.dispatch("groups/fetchDataGroupDetails", {
+        groupId: this.id,
+      });
+    }
   },
 };
 </script>

@@ -23,7 +23,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          color="green darken-1"
+          color="success darken-1"
           text
           :disabled="groupName == null"
           @click="createGroupName"

@@ -13,7 +13,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text @click="addDocument" :disabled="selected.length == 0"> Add </v-btn>
+        <v-btn color="success" text @click="addDocument" :disabled="selected.length == 0"> Add </v-btn>
         <v-btn color="green darken-1" text @click="closeDialog"> Cancel </v-btn>
       </v-card-actions>
     </v-card>

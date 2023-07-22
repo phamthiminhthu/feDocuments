@@ -17,18 +17,23 @@
 
           <v-list-item-content>
             <v-list-item-title>
-              <span
-                class="landing-font-16 font-semibold"
-                v-if="item.fullname != null"
+              <nuxt-link
+                :to="`/profile/${item.username}`"
+                class="!text-black landing-font-18 font-semibold"
               >
-                {{ item.fullname }}
-              </span>
-              <span
-                class="landing-font-14 font-semibold text-slate-500"
-                v-if="item.username != null"
-              >
-                {{ item.username }}
-              </span>
+                <span
+                  class="landing-font-16 font-semibold"
+                  v-if="item.fullname != null"
+                >
+                  {{ item.fullname }}
+                </span>
+                <span
+                  class="landing-font-14 font-semibold text-slate-500"
+                  v-if="item.username != null"
+                >
+                  {{ item.username }}
+                </span>
+              </nuxt-link>
             </v-list-item-title>
             <v-list-item-subtitle v-if="item.introduce != null">{{
               item.introduce

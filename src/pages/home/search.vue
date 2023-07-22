@@ -18,17 +18,28 @@
         <v-col cols="12">
           <DocumentShowItems
             v-if="
-              resultsSearch && resultsSearch instanceof Array &&
+              resultsSearch &&
+              resultsSearch instanceof Array &&
               (search.typeSearch === 'tag' || search.typeSearch === 'typeDocs')
             "
             :documents="resultsSearch"
             @document-updated="handleDocumentUpdated"
           />
           <UserItems
-            v-else-if="resultsSearch && resultsSearch instanceof Array && search.typeSearch === 'name'"
+            v-else-if="
+              resultsSearch &&
+              resultsSearch instanceof Array &&
+              search.typeSearch === 'name'
+            "
             :users="resultsSearch"
           />
-          <v-list-item v-else-if="resultsSearch && !(resultsSearch instanceof Array) && search.typeSearch === 'email'">
+          <v-list-item
+            v-else-if="
+              resultsSearch &&
+              !(resultsSearch instanceof Array) &&
+              search.typeSearch === 'email'
+            "
+          >
             <v-list-item-avatar>
               <v-img
                 v-if="resultsSearch.image != null"
@@ -44,18 +55,23 @@
 
             <v-list-item-content>
               <v-list-item-title>
-                <span
-                  class="landing-font-16 font-semibold"
-                  v-if="resultsSearch.fullname != null"
+                <nuxt-link
+                  :to="`/profile/${resultsSearch.username}`"
+                  class="!text-black landing-font-18 font-semibold"
                 >
-                  {{ resultsSearch.fullname }}
-                </span>
-                <span
-                  class="landing-font-14 font-semibold text-slate-500"
-                  v-if="resultsSearch.username != null"
-                >
-                  {{ resultsSearch.username }}
-                </span>
+                  <span
+                    class="landing-font-16 font-semibold"
+                    v-if="resultsSearch.fullname != null"
+                  >
+                    {{ resultsSearch.fullname }}
+                  </span>
+                  <span
+                    class="landing-font-14 font-semibold text-slate-500"
+                    v-if="resultsSearch.username != null"
+                  >
+                    {{ resultsSearch.username }}
+                  </span>
+                </nuxt-link>
               </v-list-item-title>
               <v-list-item-subtitle v-if="resultsSearch.introduce != null">{{
                 resultsSearch.introduce
@@ -76,7 +92,7 @@
                 outlined
                 color="indigo"
               >
-                Following
+                Follow
               </v-btn>
             </v-list-item-action>
           </v-list-item>

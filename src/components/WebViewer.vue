@@ -56,7 +56,8 @@ export default {
               path: "../webviewer",
               enableAnnotations: true,
               enableOfficeEditing: true,
-              initialDoc: url
+              initialDoc: url,
+              licenseKey: 'demo:1690043076994:7c705078030000000065a4ddfab637da346b9b9d08d11c4ea020a6b3a9'
             },
             this.$refs.viewer
           ).then((instance) => {
