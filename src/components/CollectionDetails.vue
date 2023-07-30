@@ -6,7 +6,7 @@
     <div class="mx-auto">
       <v-list subheader two-line>
         <v-subheader inset>
-          Folders
+          Collections
           <v-btn
             class="mx-4"
             fab
@@ -79,6 +79,7 @@
         <Documents
           :documents="formattedDocuments"
           :groupId="groupId"
+          :status="typeStatusDocs"
           @documents-updated="handleChangeListDocument"
           @delete-documents-group="deleteDocumentGroup"
         />
@@ -122,6 +123,7 @@ export default {
       status: false,
       notify: false,
       currentId: null,
+      typeStatusDocs: this.groupId ? "group" : null,
     };
   },
   props: {
@@ -230,20 +232,21 @@ export default {
     },
     async deleteDocumentGroup(documentKeys) {
       if (this.groupId != null && documentKeys != null) {
-          try {
-            const id = this.idCollection ? this.idCollection : null;
-            const response = await this.$axios.post(`/management/group/${this.groupId}/document/delete?collectionId=${id}`,
-              documentKeys
-            )
-            if (response) {
-              console.log(response);
-              this.fetchDataCollection();
-            }
-          } catch (error) {
-            console.log(error);
+        try {
+          const id = this.idCollection ? this.idCollection : null;
+          const response = await this.$axios.post(
+            `/management/group/${this.groupId}/document/delete?collectionId=${id}`,
+            documentKeys
+          );
+          if (response) {
+            console.log(response);
+            this.fetchDataCollection();
           }
-     }
-    }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
   },
 };
 </script>

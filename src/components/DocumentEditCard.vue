@@ -206,10 +206,16 @@ export default {
         description: "",
       },
       itemTypeDocument: [
-        "Article",
-        "Magazine",
-        "Technical Document",
-        "Scientific Document",
+        "Journal Articles",
+        "Monographs",
+        "Conference Proceedings",
+        "Theses and Dissertations",
+        "Technical Reports",
+        "Textbooks and Manuals",
+        "Newsletters and Review Articles",
+        "Preprints",
+        "E-journals",
+        "Whitepapers"
       ],
       newDocument: {
         title: "",
@@ -223,7 +229,10 @@ export default {
         docsStatus: 0,
       },
       tags: [],
-      itemTags: ["#chemistry", "#articles"],
+      itemTags: ["#Research", "#JournalArticle", "#ConferencePaper", "#Thesis", "#Abstract",
+        "#LiteratureReview", "#Methodology", "#DataAnalysis", "#Results", "#Discussion", "#Conclusion",
+        "#QuantitativeResearch", "#Survey", "#Experiment", "#CaseStudy", "#ReviewArticle", "#MetaAnalysis",
+      "#Hypothesis", "#LiteratureCitation"],
       showContent: false,
     };
   },

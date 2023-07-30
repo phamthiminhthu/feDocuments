@@ -7,7 +7,7 @@
       <div class="mx-auto">
         <v-list subheader two-line>
           <v-subheader inset>
-            Folders
+            Collections
             <v-btn
               class="mx-4"
               fab
@@ -106,6 +106,7 @@
             :groupId="groupId"
             @documents-updated="handleChangeListDocument"
             @delete-documents-group="deleteDocumentGroup"
+            :status="typeGroup"
           />
         </v-list>
         <NotifySnackbar :message="message" :status="status" :notify="notify" />
@@ -136,6 +137,7 @@ export default {
       removeCollectionDialog: false,
       permission: 0,
       acceptInviteDialog: false,
+      typeGroup:"group",
     };
   },
   mounted() {
@@ -274,7 +276,6 @@ export default {
           );
           if (response) {
             this.fetchDataGroupById();
-            console.log(response);
           }
         } catch (error) {
           console.log(error);

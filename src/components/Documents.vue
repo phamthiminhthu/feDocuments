@@ -151,10 +151,28 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-btn>
-            <span>Recents</span>
-            <v-icon>mdi-history</v-icon>
-          </v-btn>
+          <v-menu top :offset-y="offset" rounded="lg" v-if="status != 'group'">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn v-bind="attrs" v-on="on">
+                <span>Mark as</span>
+                <v-icon>mdi-apple-keyboard-control</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item link @click="markAsLoved">
+                <v-list-item-title>Favorite</v-list-item-title>
+              </v-list-item>
+              <v-list-item link @click="markAsPublic">
+                <v-list-item-title>Public</v-list-item-title>
+              </v-list-item>
+              <v-list-item link>
+                <v-list-item-title @click="maskAsCompleted">
+                  Completed
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
           <v-btn @click="deleteDocumentFromGroup" v-if="groupId != null">
             <span>Delete</span>
             <v-icon>mdi-delete-circle</v-icon>
@@ -499,6 +517,54 @@ export default {
         await this.$store.dispatch("groups/fetchCollectionGroup", {
           groupId: this.groupId,
         });
+      }
+    },
+    async markAsLoved() {
+      let documents = this.selected.map((doc) => doc.id);
+      try {
+        const response = await this.$axios.post(
+          "management/document/update/multi-documents/loved",
+          documents
+        );
+        if (response) {
+          this.selected = [];
+          this.$emit("documents-updated");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async markAsPublic() {
+      let documents = this.selected.map((doc) => doc.id);
+      try {
+        const response = await this.$axios.post(
+          "management/document/update/multi-documents/public",
+          documents
+        );
+
+        if (response) {
+          this.selected = [];
+          this.$emit("documents-updated");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async maskAsCompleted() {
+      console.log("test")
+      let documents = this.selected.map((doc) => doc.id);
+      console.log(documents);
+      try {
+        const response = await this.$axios.post(
+          "management/document/update/multi-documents/completed",
+          documents
+        );
+        if (response) {
+          this.selected = [];
+          this.$emit("documents-updated");
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
   },

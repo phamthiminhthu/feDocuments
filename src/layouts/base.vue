@@ -32,7 +32,7 @@
                       </template>
                       <v-list-item-group
                         color="primary"
-                        v-model="subItemSelected"
+                        v-model="item.selectedItem"
                         :key="index"
                       >
                         <v-list-item
@@ -254,7 +254,8 @@ export default {
           : 0,
     };
     this.menus[this.selectedItem.groupIndex].active = true;
-    this.subItemSelected = this.selectedItem.itemIndex;
+    this.menus[this.selectedItem.groupIndex].selectedItem =
+      this.selectedItem.itemIndex;
     this.fetchAllCollectionsParent();
     this.fetchAllGroups();
   },
@@ -308,16 +309,19 @@ export default {
           ["Trash", "mdi-delete", "/dashboard/trash"],
         ],
         active: false,
+        selectedItem: 0,
       },
       {
         title: "Collections",
         actions: [["New Collection", "mdi-new-box"]],
         active: false,
+        selectedItem: 0,
       },
       {
         title: "Groups",
-        actions: [["New Group", "mdi-account-multiple-plus-outline"]],
+        actions: [["New Group", "mdi-new-box"]],
         active: false,
+        selectedItem: 0,
       },
       {
         title: "Users",
@@ -328,10 +332,9 @@ export default {
           ["Pending Invites", " mdi-account-plus", "/pending-invites", false],
         ],
         active: false,
+        selectedItem: 0,
       },
     ],
-    selectedItem: null,
-    subItemSelected: null,
     pageActive: "Dashboard",
     notifyCollection: false,
     messageNotification: null,
@@ -347,6 +350,7 @@ export default {
     removeDialog: null,
     manageGroupDialog: false,
     leaveGroupDialog: false,
+    selectedItem: null,
   }),
   watch: {
     collectionParents() {
@@ -357,9 +361,7 @@ export default {
     },
     groups() {
       if (this.filterGroups) {
-        this.menus[2].actions = [
-          ["New Group", "mdi-account-multiple-plus-outline"],
-        ];
+        this.menus[2].actions = [["New Group", "mdi-new-box"]];
         this.menus[2].actions.unshift(...this.filterGroups);
       }
     },
@@ -368,11 +370,8 @@ export default {
     selectItem(groupIndex, itemIndex) {
       this.$cookies.set("groupIndex", groupIndex);
       this.$cookies.set("itemIndex", itemIndex);
-      this.selectedItem = {
-        groupIndex,
-        itemIndex,
-      };
       if (groupIndex != 3) {
+        this.menus[groupIndex].selectedItem = itemIndex;
         this.$router.push(this.menus[groupIndex]["actions"][itemIndex][2]);
       } else {
         let username = this.$cookies.get("currentUsername");

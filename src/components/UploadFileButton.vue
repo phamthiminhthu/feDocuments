@@ -62,6 +62,63 @@
       >
         Uploaded file <strong> {{ selectedFile.name }} </strong> Successfully !
       </v-snackbar>
+
+      <v-snackbar
+        v-model="snackbarFileExists"
+        bottom
+        color="orange darken-3"
+        tile
+        right
+        :timeout="-1"
+        :vertical="vertical"
+        class="snack-same-file"
+      >
+        <span class="landing-font-14 font-semibold">
+          <v-icon>mdi-alert</v-icon> You have previously uploaded this document
+          to the system! Do you want to compare?</span
+        >
+
+        <div class="mt-2 !pb-0">
+          <v-list-item
+            v-for="docs in documentSameExists"
+            :key="docs.documentKey"
+          >
+            <v-list-item-avatar>
+              <v-icon class="grey lighten-1" dark> mdi-clipboard-text </v-icon>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title v-if="docs.title != null">{{
+                docs.title
+              }}</v-list-item-title>
+
+              <v-list-item-subtitle v-if="docs.docsName">{{
+                docs.docsName
+              }}</v-list-item-subtitle>
+            </v-list-item-content>
+
+            <v-card-actions>
+              <v-btn icon @click="compareFile(docs.documentKey)">
+                <v-icon color="white">mdi-file-compare</v-icon>
+              </v-btn>
+              <v-btn icon @click="compareClose(docs.documentKey)">
+                <v-icon color="white">mdi-close-circle-outline</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-list-item>
+        </div>
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            class="mr-3"
+            color="white"
+            text
+            v-bind="attrs"
+            @click="snackbarFileExists = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </div>
   </div>
 </template>
@@ -83,7 +140,11 @@ export default {
       errorMessages: "",
       snackbar: false,
       snackbarSuccess: false,
+      snackbarFileExists: false,
       notify: false,
+      documentSameExists: null,
+      currentDocumentKey: null,
+      vertical: true,
     };
   },
   props: {
@@ -110,7 +171,11 @@ export default {
       }
     },
     async uploadFileDocument() {
-      if (this.selectedFile && this.selectedFile.size <= 18000000) {
+      if (this.selectedFile && this.selectedFile.type != "application/pdf") {
+        this.errorMessages = "Only allow PDF files !";
+        this.notify = true;
+      } else if (this.selectedFile && this.selectedFile.size <= 18000000) {
+        console.log(this.selectedFile.type);
         this.snackbarSuccess = false;
         this.snackbar = true;
         this.loader = "loading";
@@ -126,14 +191,20 @@ export default {
           );
           if (response) {
             this.$emit("upload-file", response);
+            const data = response.data.content;
+            this[l] = false;
+            this.loader = null;
+            this.snackbar = false;
+            this.currentDocumentKey = data.documentKey;
+            if (data != null && data.documentsDtoSameHashcode != null) {
+              this.snackbarFileExists = true;
+              this.documentSameExists = data.documentsDtoSameHashcode;
+            } else if (data != null) {
+              this.snackbarSuccess = true;
+            }
           }
-          this[l] = false;
-          this.loader = null;
-          this.snackbar = false;
-          this.snackbarSuccess = true;
         } catch (error) {
           this.$emit("upload-file", error);
-          console.log(error);
           this[l] = false;
           this.loader = null;
           this.snackbar = false;
@@ -145,7 +216,10 @@ export default {
       }
     },
     async uploadFileCollection() {
-      if (
+      if (this.selectedFile && this.selectedFile.type != "application/pdf") {
+        this.errorMessages = "Only allow PDF files !";
+        this.notify = true;
+      } else if (
         this.selectedFile &&
         this.idCollection &&
         this.selectedFile.size <= 18000000
@@ -165,11 +239,18 @@ export default {
           );
           if (response) {
             this.$emit("upload-file", response);
+            const data = response.data.content;
+            this[l] = false;
+            this.loader = null;
+            this.snackbar = false;
+            this.currentDocumentKey = data.documentKey;
+            if (data != null && data.documentsDtoSameHashcode != null) {
+              this.snackbarFileExists = true;
+              this.documentSameExists = data.documentsDtoSameHashcode;
+            } else if (data != null) {
+              this.snackbarSuccess = true;
+            }
           }
-          this[l] = false;
-          this.loader = null;
-          this.snackbar = false;
-          this.snackbarSuccess = true;
         } catch (error) {
           this.$emit("upload-file", error);
           console.log(error);
@@ -209,11 +290,18 @@ export default {
           );
           if (response) {
             this.$emit("upload-file", response);
+            this[l] = false;
+            this.loader = null;
+            this.snackbar = false;
+            const data = response.data.content;
+            this.currentDocumentKey = data.documentKey;
+            if (data != null && data.documentsDtoSameHashcode != null) {
+              this.snackbarFileExists = true;
+              this.documentSameExists = data.documentsDtoSameHashcode;
+            } else if (data != null) {
+              this.snackbarSuccess = true;
+            }
           }
-          this[l] = false;
-          this.loader = null;
-          this.snackbar = false;
-          this.snackbarSuccess = true;
         } catch (error) {
           this.$emit("upload-file", error);
           console.log(error);
@@ -231,6 +319,26 @@ export default {
         this.notify = true;
       }
     },
+    compareFile(documentKey) {
+      if (documentKey != null && this.currentDocumentKey != null) {
+        const url = `/document/compare?document1=${documentKey}&document2=${this.currentDocumentKey}`;
+        window.open(url, "_blank");
+      }
+    },
+    compareClose(documentKey) {
+      let index = this.documentSameExists.findIndex(
+        (item) => item.documentKey === documentKey
+      );
+      this.documentSameExists.splice(index, 1);
+      if (this.documentSameExists.length === 0) {
+        this.snackbarFileExists = false;
+      }
+    },
   },
 };
 </script>
+<style lang="scss">
+.snack-same-file .v-snack__content {
+  padding-bottom: 0px !important;
+}
+</style>

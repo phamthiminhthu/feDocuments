@@ -303,6 +303,7 @@ export default {
   computed: {
     avatarImage() {
       if (this.selectedAvatar) {
+        console.log(URL.createObjectURL(this.selectedAvatar));
         return URL.createObjectURL(this.selectedAvatar);
       } else if (this.user.image == null) {
         return require("@/assets/image/avatar/avatar-default.png");

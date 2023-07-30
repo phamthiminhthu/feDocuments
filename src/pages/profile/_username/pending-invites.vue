@@ -83,6 +83,9 @@ export default {
     async fetchInvitations() {
       await this.$store.dispatch("groups/fetchAllInvitationsGroup");
     },
+    async fetchAllGroups() {
+      await this.$store.dispatch("groups/fetchAllGroups");
+    },
     async acceptInvite(id) {
       try {
         const response = await this.$axios.post(
@@ -90,6 +93,7 @@ export default {
         );
         if (response) {
           this.fetchInvitations();
+          this.fetchAllGroups();
         }
       } catch (error) {
         console.log(error);
