@@ -50,7 +50,7 @@ export default {
   //Modules: nuxtjs/proxy
   modules: [
     // "@nuxtjs/proxy",
-    ["@nuxtjs/axios", { baseURL:"https://docskanry.site/api/v1/api/v1" }],
+    ["@nuxtjs/axios", { baseURL:"https://docskanry.site/api/v1" }],
     "cookie-universal-nuxt",
   ],
 
