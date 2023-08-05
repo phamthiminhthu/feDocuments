@@ -1,9 +1,11 @@
 version: '3.8'
 services:
   nuxt:
-    build: ./docker/nuxt
+    platform: linux/amd64
+    # image: phathiminthu2k0/docskanry-fe
+    build: .
     ports:
       - 3000:3000
-    volumes:
-      - ./src:/app
+    # volumes:
+    #   - ./src:/app
     tty: true

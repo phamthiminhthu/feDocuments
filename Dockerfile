@@ -19,3 +19,9 @@ ENV PATH $HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH
 ENV HOST 0.0.0.0
 
 WORKDIR /app
+
+COPY src ./
+
+RUN yarn install
+RUN yarn build
+CMD ["yarn", "start"]

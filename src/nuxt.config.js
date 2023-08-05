@@ -3,6 +3,10 @@
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
+  target: 'static',
+  generate: {
+    fallback: true
+  },
 
   server: {
     port: 3000,
@@ -38,6 +42,7 @@ export default {
   plugins: ["~plugins/axios"],
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
+ 
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
