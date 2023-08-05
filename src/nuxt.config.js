@@ -1,12 +1,17 @@
 // import colors from 'vuetify/es5/util/colors'
-
+import axios from "./plugins/axios";
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
   generate: {
-    fallback: true
+    routes() {
+      return axios.get('https://docskanry.site/api/v1/management/group/show/all').then(res => {
+        return res.data.content.map(group => {
+          return '/groups/' + group.id
+        })
+      })
+    }
   },
-  
   server: {
     port: 3000,
     host: "0.0.0.0",
