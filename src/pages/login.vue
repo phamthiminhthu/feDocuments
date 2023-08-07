@@ -140,6 +140,7 @@ export default {
     snackbarColor: "",
     showModal: false,
     messageSuccess: "",
+    pageActive: "Login"
   }),
   methods: {
     async handleLogin(event) {

@@ -55,7 +55,10 @@ export default {
   //Modules: nuxtjs/proxy
   modules: [
     // "@nuxtjs/proxy",
-    ["@nuxtjs/axios", { baseURL:"https://docskanry.site/api/v1" }],
+    ["@nuxtjs/axios", { 
+      // baseURL:"http://docskanry.site:443/api/v1" 
+      baseURL: "http://localhost:80/api/v1"
+    }],
     "cookie-universal-nuxt",
   ],
 
@@ -75,7 +78,8 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: "https://docskanry.site/api/v1",
+    // baseURL: "http://docskanry.site:443/api/v1",
+    baseURL: "http://localahost:80/api/v1",
     headers: {
       common: {
         "Content-Type": "application/json",

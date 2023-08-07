@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row>
         <v-col cols="12" class="h-[75px]">
-          <Header :pageActive="pageActive" />
+          <Header :pageActive="pageActive"/>
         </v-col>
         <v-col cols="12" class="mt-0 pt-0">
           <div class="flex gap-[6px]">

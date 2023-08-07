@@ -20,7 +20,14 @@ export default async function ({ store, route, redirect, app }) {
       await store.dispatch("auth/login", { token: token });
       return redirect("/");
     }
+    if(token){
+      await store.dispatch("auth/login", { token: token });
+      return;
+    }
   } else {
+    if(token){
+      await store.dispatch("auth/login", { token: token });
+    }
     return;
   }
 }

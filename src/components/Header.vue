@@ -16,7 +16,18 @@
     <v-spacer></v-spacer>
 
     <v-toolbar-items class="hidden-sm-and-down">
-      <v-btn text class="mt-[5px]" @click="redirectDashboard">
+      <v-btn text class="mt-[5px]" @click="redirectHome">
+        <span
+          :class="
+            pageActive === 'Introduce' ? 'color-active' : 'color-no-active'
+          "
+        >
+          Introduce
+        </span>
+      </v-btn>
+      <v-divider vertical></v-divider>
+
+      <v-btn v-if="loggedIn" text class="mt-[5px]" @click="redirectDashboard">
         <span
           :class="
             pageActive === 'Dashboard' ? 'color-active' : 'color-no-active'
@@ -28,7 +39,7 @@
 
       <v-divider vertical></v-divider>
 
-      <v-btn text class="mt-[5px]">
+      <v-btn text class="mt-[5px]" v-if="loggedIn">
         <nuxt-link
           to="/home"
           :class="pageActive === 'Home' ? 'color-active' : ''"
@@ -36,10 +47,17 @@
           Home
         </nuxt-link>
       </v-btn>
+      <v-btn v-if="!loggedIn" text class="mt-[5px]">
+        <nuxt-link to="/login"> Login </nuxt-link>
+      </v-btn>
 
       <v-divider vertical></v-divider>
 
-      <v-btn text>
+      <v-btn v-if="!loggedIn" text class="mt-[5px]">
+        <nuxt-link to="/signup"> Create Account </nuxt-link>
+      </v-btn>
+
+      <v-btn text v-if="loggedIn">
         <v-menu bottom min-width="200px" rounded offset-y>
           <template v-slot:activator="{ on }">
             <v-btn icon x-large v-on="on">
@@ -105,13 +123,21 @@ export default {
     },
   },
   mounted() {
-    this.getCurrentUser();
+    if (this.loggedIn) {
+      this.getCurrentUser();
+    }
   },
   computed: {
+    loggedIn() {
+      console.log(this.$store.getters["auth/getIsLoggedIn"]);
+      return this.$store.getters["auth/getIsLoggedIn"];
+    },
     user() {
-      let user = this.$store.getters["user/getCurrentUser"];
-      this.$cookies.set("currentUsername", user["username"]);
-      return user;
+      if (this.loggedIn) {
+        let user = this.$store.getters["user/getCurrentUser"];
+        this.$cookies.set("currentUsername", user["username"]);
+        return user;
+      }
     },
   },
   methods: {
@@ -137,6 +163,9 @@ export default {
         this.$cookies.set("itemIndex", 0);
         this.$router.push("/profile/" + username);
       }
+    },
+    redirectHome() {
+      this.$router.push("/");
     },
   },
 };

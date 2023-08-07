@@ -12,6 +12,6 @@ export default {
         return {
             pageActive: "Home",
         }
-    }
+    },
 }
 </script>
