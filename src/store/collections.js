@@ -4,6 +4,7 @@ export const state = () => {
     collectionsParent: null,
     collection: null,
     collectionsAll: null,
+    treeCollections: null
   };
 };
 
@@ -20,6 +21,9 @@ export const mutations = {
   setCollectionsAll(state, value) {
     state.collectionsAll = value;
   },
+  setTreeCollections(state, value) {
+    state.treeCollections = value;
+  }
 };
 
 export const getters = {
@@ -27,6 +31,7 @@ export const getters = {
   getCollectionsParent: (state) => state.collectionsParent,
   getCollectionDetails: (state) => state.collectionDetails,
   getCollectionsAll: (state) => state.collectionsAll,
+  getTreeCollections: (state) => state.treeCollections
 };
 export const actions = {
   async fetchAllCollectionsParent({ commit }) {
@@ -81,4 +86,19 @@ export const actions = {
       console.log(error);
     }
   },
+
+  async fetchTreeCollections({commit}){
+    try {
+      const response = await this.$axios.get(
+        "/owner/management/collection/show/details/all"
+      );
+      if (response) {
+        const treeCollections = response.data.content;
+        commit("setTreeCollections", treeCollections);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 };

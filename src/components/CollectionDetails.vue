@@ -1,11 +1,12 @@
 <template>
   <div v-if="collection">
-    <div class="text-center landing-title-page mb-16">
-      {{ collection.collectionName }}
+    <div class="text-center mb-16">
+      <span class="landing-font-32">Collection</span> <strong class="landing-title-page">"{{ collection.collectionName }}"</strong>
     </div>
+    <BreadCrumbs :idCollection="idCollection" :idGroup="groupId" />
     <div class="mx-auto">
       <v-list subheader two-line>
-        <v-subheader inset>
+        <v-subheader inset class="ml-2">
           Collections
           <v-btn
             class="mx-4"
@@ -67,7 +68,7 @@
             </v-list-item>
           </v-col>
         </v-row>
-        <v-subheader inset class="mt-5">
+        <v-subheader inset class="mt-5 ml-2">
           Files
           <UploadFileButton
             class="mx-3"
@@ -172,9 +173,9 @@ export default {
         this.$router.push(`/groups/${this.groupId}/collections/${id}`);
       }
     },
-    createSuccessfully(respone) {
+    async createSuccessfully(respone) {
       if (respone.status == 200) {
-        this.fetchDataCollection();
+       await this.fetchDataCollection();
         this.notify = true;
         this.status = true;
         this.message = "Create Collections Successfully!";
@@ -183,16 +184,15 @@ export default {
         this.notify = true;
         this.status = false;
         this.message = "Collection name already exists!";
-        this.createDialog = true;
       }
     },
     renameCollection(id) {
       this.currentId = id;
       this.editDialog = true;
     },
-    updateCollection(response) {
+    async updateCollection(response) {
       if (response.status === 200) {
-        this.fetchDataCollection();
+        await this.fetchDataCollection();
         this.editDialog = false;
         this.notify = true;
         this.status = true;
@@ -208,9 +208,9 @@ export default {
       this.currentId = id;
       this.removeDialog = true;
     },
-    updateAfterRemoveCollection(response) {
+    async updateAfterRemoveCollection(response) {
       if (response.status === 200) {
-        this.fetchDataCollection();
+        await this.fetchDataCollection();
         this.notify = true;
         this.status = true;
         this.message = "Delete Collections Successfully!";
@@ -240,7 +240,7 @@ export default {
           );
           if (response) {
             console.log(response);
-            this.fetchDataCollection();
+            await this.fetchDataCollection();
           }
         } catch (error) {
           console.log(error);

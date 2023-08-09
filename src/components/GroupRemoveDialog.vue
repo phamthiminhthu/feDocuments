@@ -77,6 +77,7 @@ export default {
         );
           if (response) {
             this.$emit('delete-group', response)
+            this.$router.push('/groups')
         }
       } catch (error) {
         console.log(error);

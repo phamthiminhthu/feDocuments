@@ -70,11 +70,11 @@
               column
               class="white--text !py-0"
               v-if="
-                formattedDocument.tagDtoList != null && formattedDocument.tagDtoList.length > 0
+                formattedDocument.tags != null && formattedDocument.tags.length > 0
               "
             >
               <v-chip
-                v-for="tag in formattedDocument.tagDtoList"
+                v-for="tag in formattedDocument.tags"
                 :key="tag.id"
                 class="white--text"
                 color="blue"

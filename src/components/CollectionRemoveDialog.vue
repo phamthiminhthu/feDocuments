@@ -93,6 +93,7 @@ export default {
           );
           if (response) {
             this.$emit("remove-collection", response);
+            this.$router.push('/collections')
           }
         } catch (error) {
           this.$emit("remove-collection", error);

@@ -6,7 +6,7 @@ const copyFiles = async () => {
       "./node_modules/@pdftron/webviewer/public",
       "./static/webviewer/"
     );
-    console.log("WebViewer files copied over successfully");
+    // console.log("WebViewer files copied over successfully");
   } catch (err) {
     console.error(err);
   }

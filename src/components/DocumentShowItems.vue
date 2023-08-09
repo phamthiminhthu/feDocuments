@@ -55,12 +55,12 @@
             <v-chip-group
               column
               v-if="
-                itemDocument.tagDtoList != null &&
-                itemDocument.tagDtoList.length > 0
+                itemDocument.tags != null &&
+                itemDocument.tags.length > 0
               "
             >
               <v-chip
-                v-for="(tags, index) in itemDocument.tagDtoList"
+                v-for="(tags, index) in itemDocument.tags"
                 color="orange"
                 small
                 :key="tags.tagName + index"

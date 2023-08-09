@@ -1,12 +1,13 @@
 <template>
   <div>
     <div v-if="groupDetails">
-      <div class="text-center landing-title-page mb-16">
-        {{ groupDetails.groupName }}
+      <div class="text-center mb-16">
+        <span class="landing-font-32">Group </span><strong class="landing-title-page">"{{ groupDetails.groupName }}"</strong>
       </div>
+      <BreadCrumbs :idGroup="groupId" />
       <div class="mx-auto">
         <v-list subheader two-line>
-          <v-subheader inset>
+          <v-subheader inset class="ml-2">
             Collections
             <v-btn
               class="mx-4"
@@ -68,7 +69,7 @@
               </v-list-item>
             </v-col>
           </v-row>
-          <v-subheader inset class="mt-5">
+          <v-subheader inset class="mt-5 ml-2">
             Files
             <UploadFileButton
               class="mx-3"
@@ -182,9 +183,9 @@ export default {
     handleChangeListDocument() {
       this.fetchDataGroupById();
     },
-    createCollection(response) {
+    async createCollection(response) {
       if (response.status == 200) {
-        this.fetchDataGroupById();
+        await this.fetchDataGroupById();
         this.createCollectionDialog = false;
         this.notify = true;
         this.status = true;

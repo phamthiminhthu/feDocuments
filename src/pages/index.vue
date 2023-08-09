@@ -126,7 +126,6 @@ export default {
   },
   methods: {
     redirectPage(link, index) {
-      console.log(this.loggedIn);
       if (this.loggedIn) {
         this.$router.push(link);
         this.$cookies.set('groupIndex', index);

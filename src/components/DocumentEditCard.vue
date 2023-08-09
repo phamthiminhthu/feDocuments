@@ -254,10 +254,10 @@ export default {
       return [];
     },
     getTagsDocs(objDocument) {
-      if (objDocument.tagDtoList != null && objDocument.tagDtoList.length > 0) {
+      if (objDocument.tags != null && objDocument.tags.length > 0) {
         let listTags = [];
-        for (let i = 0; i < objDocument.tagDtoList.length; i++) {
-          listTags.push(objDocument.tagDtoList[i].tagName);
+        for (let i = 0; i < objDocument.tags.length; i++) {
+          listTags.push(objDocument.tags[i].tagName);
         }
         return listTags;
       }

@@ -151,7 +151,6 @@ export default {
           password: this.password,
         });
         if (response) {
-          console.log("success", response);
           this.showModal = true;
           this.messageSuccess = "Login successfully";
           this.$store.dispatch("auth/login", { token: response.content });

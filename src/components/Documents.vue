@@ -551,9 +551,7 @@ export default {
       }
     },
     async maskAsCompleted() {
-      console.log("test")
       let documents = this.selected.map((doc) => doc.id);
-      console.log(documents);
       try {
         const response = await this.$axios.post(
           "management/document/update/multi-documents/completed",

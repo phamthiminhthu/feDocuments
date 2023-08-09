@@ -8,6 +8,8 @@ export const state = () => {
     members: null,
     pendingInvites: null,
     invitations: null,
+    groupsTree: null,
+    breadcrumbs: null,
   };
 };
 
@@ -36,6 +38,12 @@ export const mutations = {
   setInvitations(state, value) {
     state.invitations = value;
   },
+  setGroupTree(state, value) {
+    state.groupsTree = value;
+  },
+  setBreadcrumbs(state, value) {
+    state.breadcrumbs = value;
+  },
 };
 
 export const getters = {
@@ -47,6 +55,8 @@ export const getters = {
   getMembers: (state) => state.members,
   getPendingInvites: (state) => state.pendingInvites,
   getInvitations: (state) => state.invitations,
+  getGroupsTree: (state) => state.groupsTree,
+  getBreadcrumbs: (state) => state.breadcrumbs,
 };
 export const actions = {
   async fetchAllGroups({ commit }) {
@@ -137,8 +147,42 @@ export const actions = {
         `/management/group/invitations/pending`
       );
       if (response) {
-        console.log(response.data.content);
         commit("setInvitations", response.data.content);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async fetchAllGroupsTree({ commit }) {
+    try {
+      const response = await this.$axios.get(
+        `/owner/management/collection/show/details/groups/all`
+      );
+      if (response) {
+        commit("setGroupTree", response.data.content);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async fetchBreadCrumbs({ commit }, payload) {
+    try {
+      let response = null;
+      if (payload.idCollection != null && payload.idGroup != null) {
+        response = await this.$axios.get(
+          `/owner/management/collection/show/breadcrumbs/id?idCollection=${payload.idCollection}&idGroup=${payload.idGroup}`
+        );
+      } else if (payload.idCollection != null && payload.idGroup == null) {
+        response = await this.$axios.get(
+          `/owner/management/collection/show/breadcrumbs/id?idCollection=${payload.idCollection}`
+        );
+      } else if (payload.idGroup != null && payload.idCollection == null) {
+        response = await this.$axios.get(
+          `/owner/management/collection/show/breadcrumbs/id?idGroup=${payload.idGroup}`
+        );
+      }
+      if (response != null) {
+        commit("setBreadcrumbs", response.data.content);
       }
     } catch (error) {
       console.log(error);

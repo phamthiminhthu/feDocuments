@@ -396,7 +396,6 @@ export default {
         this.statusCreated = true;
         this.messageNotification = "Create collection successfully!";
       } else {
-        this.createDialog = true;
         this.notifyCollection = true;
         this.statusCreated = false;
         this.messageNotification = "Collection name already exists!";

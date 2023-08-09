@@ -6,6 +6,14 @@
       Group Invitations
     </h3>
     <div v-if="formattedInvitations" class="mt-12">
+     <v-card class="mx-auto w-3/5">
+      <div v-if="formattedInvitations.length <= 0" class="p-10">
+          <span class="landing-font-18 italic"> 
+            No pending invites.
+          </span
+          >
+      </div>
+     </v-card>
       <v-card
         class="w-3/5 mx-auto"
         v-if="formattedInvitations != null && formattedInvitations.length > 0"
