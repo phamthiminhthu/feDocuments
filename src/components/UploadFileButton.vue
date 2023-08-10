@@ -175,7 +175,6 @@ export default {
         this.errorMessages = "Only allow PDF files !";
         this.notify = true;
       } else if (this.selectedFile && this.selectedFile.size <= 18000000) {
-        console.log(this.selectedFile.type);
         this.snackbarSuccess = false;
         this.snackbar = true;
         this.loader = "loading";

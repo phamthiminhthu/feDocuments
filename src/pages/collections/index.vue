@@ -81,9 +81,9 @@ export default {
         ),
       };
     },
-    async createCollection(response) {
+    createCollection(response) {
       if (response.status == 200) {
-        await this.getTreeCollections();
+        this.getTreeCollections();
         this.createDialog = false;
         this.notifyCollection = true;
         this.statusCreated = true;

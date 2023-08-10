@@ -388,9 +388,9 @@ export default {
     async fetchAllGroups() {
       await this.$store.dispatch("groups/fetchAllGroups");
     },
-    async createCollection(response) {
+    createCollection(response) {
       if (response.status == 200) {
-        await this.fetchAllCollectionsParent();
+        this.fetchAllCollectionsParent();
         this.createDialog = false;
         this.notifyCollection = true;
         this.statusCreated = true;
@@ -463,7 +463,6 @@ export default {
     leaveGroup(id) {
       this.idGroup = id;
       this.leaveGroupDialog = true;
-      console.log(id);
     },
     updateleaveGroup(response) {
       if (response.status == 200) {
@@ -472,6 +471,7 @@ export default {
         this.notifyCollection = true;
         this.statusCreated = true;
         this.messageNotification = "Leave group successfully!";
+        this.push('/groups');
       } else {
         this.leaveGroupDialog = true;
         this.notifyCollection = true;

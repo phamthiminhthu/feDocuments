@@ -80,6 +80,7 @@
         <Documents
           :documents="formattedDocuments"
           :groupId="groupId"
+          :collectionId="idCollection"
           :status="typeStatusDocs"
           @documents-updated="handleChangeListDocument"
           @delete-documents-group="deleteDocumentGroup"

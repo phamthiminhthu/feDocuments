@@ -20,8 +20,8 @@ ENV HOST 0.0.0.0
 
 WORKDIR /app
 
-# COPY src ./
+COPY src ./
 
-# RUN yarn install
-# RUN yarn build
-# CMD ["yarn", "start"]
+RUN yarn install
+RUN yarn build
+CMD ["yarn", "start"]

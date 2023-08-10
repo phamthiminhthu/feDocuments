@@ -183,9 +183,9 @@ export default {
     handleChangeListDocument() {
       this.fetchDataGroupById();
     },
-    async createCollection(response) {
+    createCollection(response) {
       if (response.status == 200) {
-        await this.fetchDataGroupById();
+        this.fetchDataGroupById();
         this.createCollectionDialog = false;
         this.notify = true;
         this.status = true;

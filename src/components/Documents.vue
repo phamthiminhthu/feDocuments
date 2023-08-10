@@ -292,6 +292,7 @@ export default {
       default: null,
     },
     groupId: null,
+    collectionId: null
   },
   computed: {
     formattedDocuments() {
@@ -375,10 +376,24 @@ export default {
     },
     async deleteDocument() {
       let documentsMoveToTrash = this.selected.map((doc) => doc.id);
-      if (this.groupId == null) {
+      if (this.groupId == null && this.collectionId == null) {
         try {
           const response = await this.$axios.post(
             "/management/document/delete/trash",
+            documentsMoveToTrash
+          );
+          if (response) {
+            this.sheet = false;
+            this.$emit("documents-updated");
+            this.selected = [];
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }else if(this.groupId == null && this.collectionId != null){
+        try {
+          const response = await this.$axios.post(
+            `/owner/management/collection/document/delete?collectionId=${this.collectionId}`,
             documentsMoveToTrash
           );
           if (response) {
@@ -400,7 +415,6 @@ export default {
     },
     async putBackDocs() {
       let documentsPutPack = this.selected.map((doc) => doc.id);
-      console.log(documentsPutPack);
       try {
         const response = await this.$axios.post(
           "/management/document/undo",

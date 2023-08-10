@@ -28,7 +28,6 @@ export default {
   props: {
     idCollection: null,
     idGroup: null,
-    hasGroup: false,
   },
   mounted() {
     if (this.idCollection || this.idGroup) {
@@ -41,7 +40,6 @@ export default {
     },
     formattedBreadCrumbs() {
       if (this.idCollection != null && this.idGroup != null) {
-        this.hasGroup = true;
         if (
           this.breadCrumbsItems != null &&
           Array.isArray(this.breadCrumbsItems)
@@ -67,7 +65,6 @@ export default {
           }));
         }
       } else if (this.idCollection == null && this.idGroup != null) {
-        this.hasGroup = true;
         if (
           this.breadCrumbsItems != null &&
           Array.isArray(this.breadCrumbsItems)

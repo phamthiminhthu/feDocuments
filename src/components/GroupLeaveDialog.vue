@@ -75,6 +75,7 @@ export default {
           );
           if (response) {
             this.$emit("leave-group", response);
+            this.$router.push('/groups');
           }
         } catch (error) {
           this.$emit("leave-group", error);

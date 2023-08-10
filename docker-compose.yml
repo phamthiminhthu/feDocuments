@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   nuxt:
-    # platform: linux/amd64
-    # image: phamthiminhthu2k0/docskanry-fe
+    platform: linux/amd64
+    image: phamthiminhthu2k0/docskanry-fe
     build: .
     ports:
       - 3000:3000
